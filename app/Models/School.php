@@ -6,18 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\LaravelPackageTools\Traits\HasValidations;
+use Carbon\Carbon;
 
 class school extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'schools';
 
-    /**
-     * The attributes that are translatable.
-     *
-     * @var array
-     */
-    //public $translatable = ['name']; // Consider translating other fields if needed
 
     /**
      * The attributes that are mass assignable.
@@ -34,17 +29,11 @@ class school extends Model
         'logo', // Optional
     ];
 
-    public function rules(): array
+    protected $dates = ['created_at', 'updated_at'];
+
+    public function getCreatedAtAttribute($value)
     {
-        return [
-            'name' => 'required|string|max:255',
-            'code' => 'required|string|unique|max:255',
-            'affiliation_no' => 'nullable|string|max:255',
-            'phone' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:schools,email',
-            'address' => 'required|string',
-            'logo' => 'nullable|string', // Optional: Validate image file properties if applicable
-        ];
+        return Carbon::parse($value)->format('d-M-Y');
     }
 
     // Relationships (consider adding these based on your specific requirements)

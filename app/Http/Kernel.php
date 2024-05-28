@@ -23,6 +23,12 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
 
+    protected $routeMiddleware = [
+        // Other middleware
+        'permission' => \App\Http\Middleware\CheckPermission::class,
+        'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+    ];
+
     /**
      * The application's route middleware groups.
      *

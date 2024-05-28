@@ -51,21 +51,28 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="{{route('course.list')}}" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Course Master</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="{{route('batch.list')}}" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Batch Master</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="{{route('department.list')}}" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Department Master</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{route('roles-permissions.index')}}" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Permissions</p>
                             </a>
                         </li>
                     </ul>

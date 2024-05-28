@@ -9,13 +9,13 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Registered Schools</h1>
+                <h1 class="m-0">Departments</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item">Dashboard</li>
                     <li class="breadcrumb-item">Management Corner</li>
-                    <li class="breadcrumb-item">School</li>
+                    <li class="breadcrumb-item">Department</li>
                     <li class="breadcrumb-item active"><a href="#">New</a></li>
                 </ol>
             </div><!-- /.col -->
@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <div class="col-md-2">
-                    <a class="btn btn-lg btn-success mr-2" href="{{ route('schools.create') }}">Add</a>
+                    <a class="btn btn-lg btn-success mr-2" href="{{ route('department.create') }}">Add</a>
                 </div>
             </div>            
         </div>
