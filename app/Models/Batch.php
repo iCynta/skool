@@ -11,7 +11,7 @@ class Batch extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['code', 'course_id','name', 'merit_seat', 'payment_seat', 'tution_fee', 'start_date', 'end_date']; 
+    protected $fillable = ['code', 'course_id','name', 'merit_seat', 'payment_seat', 'tution_fee', 'course_tenure', 'start_date',]; 
 
     protected $dates = ['created_at', 'updated_at'];
 

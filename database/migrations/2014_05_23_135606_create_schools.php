@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('code')->unique();
             $table->string('affiliation_no')->nullable();
-            $table->string('phone');
-            $table->string('email');
-            $table->text('address');
+            $table->string('phone')->nullable();;
+            $table->string('email')->nullable();;
+            $table->text('address')->nullable();;
             $table->string('logo')->nullable();
             $table->softDeletes(); // Adds the deleted_at column
             $table->timestamps();

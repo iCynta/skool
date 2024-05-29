@@ -37,10 +37,10 @@ class BatchController extends Controller
             'name' => 'required|string',
             'course_id' => 'required|exists:courses,id',
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
             'merit_seat' => 'required|integer',
             'payment_seat' => 'required|integer',
             'tution_fee' => 'required|numeric',
+            'course_tenure' => 'required|numeric'
         ]);
 
         // Fetch the course code using the course ID
@@ -51,10 +51,11 @@ class BatchController extends Controller
 
         // Extract start and end dates
         $startDate = Carbon::parse($request->input('start_date'));
-        $endDate = Carbon::parse($request->input('end_date'));
+
         // Extract years from start and end dates
         $startYear = $startDate->year;
-        $endYear = $endDate->year;
+        $course_tenure = ceil(intval($request->input('course_tenure')) / 12);
+        $endYear = $startYear + ($course_tenure < 1 ? 1 : $course_tenure); // If the course tenure is less than 1 year
         // Generate the batch code
         $batchCode = $course->code . '-' . $startYear . '-' . $endYear;
 
@@ -63,11 +64,11 @@ class BatchController extends Controller
         $batch->code = $batchCode;
         $batch->course_id = $course->id;
         $batch->name = $request->input('name');
-        $batch->merit_seat = $request->input('merit_seat');
-        $batch->payment_seat = $request->input('payment_seat');
+        $batch->merit_seat = intval($request->input('merit_seat'));
+        $batch->payment_seat = intval($request->input('payment_seat'));
         $batch->tution_fee = $request->input('tution_fee');
+        $batch->course_tenure = intval($request->input('course_tenure'));
         $batch->start_date = $startDate;
-        $batch->end_date = $endDate;
 
         $batch->save();
         

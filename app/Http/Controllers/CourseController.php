@@ -34,6 +34,8 @@ class CourseController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'code' => 'required|string|unique:courses,code|max:10',
+            'school_id' => 'required|integer|unique:schools,code',
+            
         ]);
 
         $school = Course::create($request->all());

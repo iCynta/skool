@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('payment_seat');
             $table->decimal('tution_fee', 8, 2); // Added precision and scale to the decimal
             $table->date('start_date');
-            $table->date('end_date');
+            $table->unsignedTinyInteger('course_tenure'); // Course tenure in months
             $table->softDeletes(); // Adds the deleted_at column
             $table->timestamps();
 

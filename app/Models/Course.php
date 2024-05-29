@@ -11,8 +11,7 @@ class Course extends Model
 {
     use HasFactory, SoftDeletes;
     protected $fillable = [
-        'name',
-        'code',
+        'name', 'code', 'school_id'
     ];
 
     protected $dates = ['created_at', 'updated_at'];

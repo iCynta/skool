@@ -24,16 +24,33 @@ class RolePermissionController extends Controller
 
     public function update(Request $request, Role $role)
     {
-        $roleId = $request->get('role_id'); // Find role by ID
+        $roleId = intval($request->input('role_id')); // Find role by ID
     
-        // Convert permission IDs from strings to integers
-        $permissions = array_map('intval', $request->permissions);
+        // Validate request (if applicable)
+        // $this->validate($request, [
+        //     'role_id' => 'required|integer|exists:roles,id',
+        //     'permissions' => 'required|array',
+        // ]);
     
-        // Update permissions without removing existing ones
-        $role->syncPermissions($permissions);
+        // Check if role exists
+        if (!$role = Role::find($roleId)) {
+            return redirect()->back()->withErrors(['error' => 'Role not found']);
+        }
+    
+        // Convert permission IDs if necessary
+        if (is_array($request->permissions)) {
+            $permissions = array_map('intval', $request->permissions);
+        } else {
+            // Handle case where permissions is not an array
+            return redirect()->back()->withErrors(['error' => 'Invalid permissions format']);
+        }
+    
+        // Update permissions without removing existing ones (modify as needed)
+        $role->syncPermissions($permissions); // Replace with attach/detach if needed
     
         return redirect()->route('roles-permissions.index')
             ->with('success', 'Permissions updated successfully.');
     }
+    
     
 }

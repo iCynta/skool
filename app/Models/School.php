@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\LaravelPackageTools\Traits\HasValidations;
 use Carbon\Carbon;
 
-class school extends Model
+class School extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'schools';

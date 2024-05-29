@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('school_id');
             $table->string('name',255);
             $table->string('code',20)->unique();
             $table->softDeletes(); // Adds the deleted_at column
-            $table->timestamps();
-            
+            $table->timestamps();            
+
+            // Foreign key constraint
+            $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade');
         });
     }
 
