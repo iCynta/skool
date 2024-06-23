@@ -21,9 +21,9 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Gate::define('manage-users', function ($user) {
+        // Gate::define('', function ($user) {
         //     // Define your logic to determine if the user can manage users
-        //     return $user->role === 'admin'; // Example logic
+        //     return $user->role === 'Management';
         // });
     }
 }

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Validation\Rule;
 
+use Spatie\Permission\Models\Role;
+
 class RegisterController extends Controller
 {
     use RegistersUsers;
@@ -38,7 +40,8 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
-        return User::create([
+        // Create the user
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
@@ -49,5 +52,14 @@ class RegisterController extends Controller
             'phone' => $data['phone'],
             'dob' => $data['dob'],
         ]);
+    
+        // Fetch the role
+        $role = Role::findById($data['role']); // $data['role'] is the role ID
+    
+        // Assign the role to the user
+        $user->assignRole($role);
+    
+        // Return the user
+        return $user;
     }
 }

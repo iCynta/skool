@@ -11,23 +11,28 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');   
-            $table->string('designation')->nullable();
-            $table->unsignedBigInteger('course_id');
-            $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
-            $table->unsignedBigInteger('role_id'); // storing role ID as a foreign key
-            $table->foreign('role_id')->references('id')->on('roles'); // Foreign key constraint
-            $table->text('address')->nullable();
-            $table->string('phone')->nullable();
-            $table->date('dob')->nullable();
+        Schema::create('students', function (Blueprint $table) {
+            $table->id();            
+            $table->string('name', 255)->index();       
+            $table->date('dob')->index();           
+            $table->string('contact_number', 15)->nullable()->index();
+            $table->string('contact_person', 255)->nullable();
+            $table->string('student_relation', 255)->nullable();
+            $table->string('seat_type', 255);
+            $table->double('donation')->nullable(); // Donation amount.
+            $table->unsignedBigInteger('referred_by')->nullable()->index(); // Foreign key to User with management role
+            $table->string('admission_no')->unique();
+            $table->unsignedBigInteger('course_id')->index(); // Foreign key to the Course model
+            $table->unsignedBigInteger('batch_id')->index(); // Foreign key to the Batch model
+            $table->unsignedBigInteger('department_id')->index(); // Foreign key to the Department model
             $table->softDeletes();
-            $table->rememberToken();
             $table->timestamps();
+
+            // Adding foreign key constraints
+            $table->foreign('referred_by')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
+            $table->foreign('batch_id')->references('id')->on('batches')->onDelete('cascade');
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
         });
     }
 
