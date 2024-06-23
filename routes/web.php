@@ -10,7 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\StudentController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth/login');
 });
 
 Auth::routes(['register' => false]);
@@ -75,7 +75,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Student Management
     Route::group(['middleware' => ['role:Management|Organizer']], function () {
-        Route::resource('students', StudentController::class);
+        Route::resource('students', StudentController::class); // Will create all the routes
     });
 
 });

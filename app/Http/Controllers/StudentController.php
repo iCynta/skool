@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Course;
 use App\Models\Batch;
 use App\Models\Department;
+use App\Models\SeatType;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -18,11 +19,14 @@ class StudentController extends Controller
 
     public function create()
     {
-        $users = User::all();
+        $managementUsers = User::whereHas('role', function ($query) {
+            $query->where('name', 'Management');
+        })->get();
         $courses = Course::all();
         $batches = Batch::all();
         $departments = Department::all();
-        return view('students.create', compact('users', 'courses', 'batches', 'departments'));
+        $seatTypes = SeatType::all();
+        return view('students.create', compact('managementUsers', 'courses', 'batches', 'departments', 'seatTypes'));
     }
 
     public function store(Request $request)

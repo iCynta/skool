@@ -23,6 +23,8 @@ return new class extends Migration
             $table->double('donation')->nullable(); // Donation amount.
             $table->bigInteger('referred_by')->nullable(); // Foreign key to User with management role
             $table->string('admission_no')->unique();
+            $table->string('address', 120)->nullable();
+            $table->string('gender', 10);
             $table->bigInteger('course_id'); // Foreign key to the Course model
             $table->bigInteger('batch_id'); // Foreign key to the Batch model
             $table->bigInteger('department_id'); // Foreign key to the Department model
