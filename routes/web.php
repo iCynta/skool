@@ -8,6 +8,7 @@ use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\VehicleController;
 
 Route::get('/', function () {
     return view('auth/login');
@@ -76,6 +77,11 @@ Route::group(['middleware' => 'auth'], function () {
     //Student Management
     Route::group(['middleware' => ['role:Management|Organizer']], function () {
         Route::resource('students', StudentController::class); // Will create all the routes
+    });
+
+    //Vehicle Management
+    Route::group(['middleware' => ['role:Management|Organizer']], function () {
+        Route::resource('vehicles', VehicleController::class); // Will create all the routes
     });
 
 });
