@@ -60,9 +60,9 @@
                     <td> {{ $loop->index + 1 }} </td>
                     <td> {{ $vehicle->plate_number }} </td>
                     <td> 
-                        <a href="#" class="btn btn-sm btn-primary">VIEW</a>
-                        <a href="#" class="btn btn-sm btn-edit">EDIT</a>
-                        <a href="#" class="btn btn-sm btn-delete">DELETE</a>
+                        <a href="{{route('vehicles.show',['vehicle'=>$vehicle->id])}}" class="btn btn-sm btn-primary">VIEW</a>
+                        <a href="{{route('vehicles.edit',['vehicle'=>$vehicle->id])}}" class="btn btn-sm btn-warning">EDIT</a>
+                        <a href="#" class="btn btn-sm btn-danger">DELETE</a>
                     </td>
                 </tr>
                 @empty

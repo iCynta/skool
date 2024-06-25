@@ -82,6 +82,7 @@ Route::group(['middleware' => 'auth'], function () {
     //Vehicle Management
     Route::group(['middleware' => ['role:Management|Organizer']], function () {
         Route::resource('vehicles', VehicleController::class); // Will create all the routes
+        
     });
 
 });
