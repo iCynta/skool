@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Vehicle;
+use App\Models\VehicleExpense;
+use App\Models\VehicleExpenseMaster;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -115,5 +117,41 @@ class VehicleController extends Controller
     public function destroy(Vehicle $vehicle)
     {
         //
+    }
+
+    public function CreateExpense(Request $request)
+    {
+        $vehicleExpenseMasters = VehicleExpenseMaster::all();
+        $vehicles = Vehicle::all();
+        return view('vehicles.create_expense', compact('vehicleExpenseMasters', 'vehicles'));
+    }
+
+    public function AddVehicleExpence(Request $request)
+    {
+        //dd($request->all());
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'vehicle_id' => 'required|string|max:20|exists:vehicles,id',
+                'expense_id' => 'required|integer|exists:vehicle_expense_master,id',
+                'amount' => 'required|numeric|min:1',
+                'fuel' => 'string|max:10',
+                'description' => 'max:100'
+            ]
+        );
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        try
+        {
+            $expense = $request->all();
+            $expense['created_by'] = Auth()->user()->id;
+            VehicleExpense::create($expense);
+            return redirect()->route('vehicles.show',['vehicle'=>$request->vehicle_id])->with('success','Expense successfully added');
+        } catch (ModelNotFoundException $e)
+        {
+            return redirect()->back()->with('error', 'Expense can not record');
+        }
     }
 }

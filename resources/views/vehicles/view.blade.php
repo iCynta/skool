@@ -49,7 +49,10 @@
         <table class="table table-striped">
             <thead class="bg-dark">
                 <tr>
-                    <th colspan="2">Vehicle Detail</th>
+                    <th colspan="">Vehicle Detail</th>
+                    <th>
+                        <a href="{{route('vehicle.expense.new')}}" class="btn btn-sm btn-primary">Add Expense</a>
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -63,12 +66,12 @@
                     <td> Description :</td> <td>{{$vehicle->description}}</td>
                 </tr>  
             </tbody>
-            <tfoot>
-                <tr colspan="2">
-                    <td  class=" col-12 float-right">
-                        <a href="{{route('vehicles.index')}}" class="btn btn-md btn-secondary">Back</a>
-                        <a href="{{route('vehicles.edit',['vehicle'=>$vehicle->id])}}" class="btn btn-md btn-warning">Edit</a>
-                        <a href="#" class="btn btn-md btn-danger">Delete</a>
+            <tfoot class="">
+                <tr >
+                    <td  colspan="2" class="text-center">
+                        <a href="{{route('vehicles.index')}}" class="btn btn-sm btn-secondary">Back</a>
+                        <a href="{{route('vehicles.edit',['vehicle'=>$vehicle->id])}}" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
                     </td>
                 </tr>
             </tfoot>

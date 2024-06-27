@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('code', 20); // Assuming code length is 20
             $table->unsignedBigInteger('course_id');
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
-            $table->string('name', 255);
+            $table->string('name', 191);
             $table->integer('merit_seat');
             $table->integer('payment_seat');
             $table->decimal('tution_fee', 8, 2); // Added precision and scale to the decimal

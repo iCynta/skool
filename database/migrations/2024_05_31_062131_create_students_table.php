@@ -14,12 +14,12 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();            
-            $table->string('name', 255);       
+            $table->string('name', 191);       
             $table->date('dob');           
             $table->string('contact_number', 15)->nullable();
-            $table->string('contact_person', 255)->nullable();
-            $table->string('student_relation', 255)->nullable();
-            $table->string('seat_type', 255);
+            $table->string('contact_person', 191)->nullable();
+            $table->string('student_relation', 191)->nullable();
+            $table->string('seat_type', 191);
             $table->double('donation')->nullable(); // Donation amount.
             $table->bigInteger('referred_by')->nullable(); // Foreign key to User with management role
             $table->string('admission_no')->unique();

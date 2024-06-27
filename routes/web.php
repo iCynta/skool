@@ -83,6 +83,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => ['role:Management|Organizer']], function () {
         Route::resource('vehicles', VehicleController::class); // Will create all the routes
         
+        Route::get('/vehicles/expense/', [VehicleController::class, 'CreateExpense'])->name('vehicle.expense.add');
     });
+
+    //Vehicle Expenses
+    Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
+        Route::resource('vehicles', VehicleController::class); // Will create all the routes
+        
+        Route::get('/vehicles/expense/new', [VehicleController::class, 'CreateExpense'])->name('vehicle.expense.new');
+        Route::post('/vehicles/expense/add', [VehicleController::class, 'AddVehicleExpence'])->name('vehicle.expense.add');
+    });
+
+    
 
 });

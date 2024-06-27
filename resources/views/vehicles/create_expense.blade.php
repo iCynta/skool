@@ -12,6 +12,7 @@
                     <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
                     <li class="breadcrumb-item">Vehicle Master</li>
                     <li class="breadcrumb-item">Vehicles</li>
+                    <li class="breadcrumb-item">Expense</li>
                     <li class="breadcrumb-item active">New</li>
                 </ol>
             </div><!-- /.col -->
@@ -36,20 +37,26 @@
         <div class="container">
             <div class="card card-secondary">
                 <div class="card-header">
-                    <h3 class="card-title">New Vehicle</h3>
+                    <h3 class="card-title">Add Expense</h3>
                 </div>
                 <!-- /.card-header -->
                 <!-- form start -->
-                <form action="{{route('vehicles.store')}}" method="post">
+                <form action="{{route('vehicle.expense.add')}}" method="post">
                     @csrf
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="name">Plate Number</label>
-                                    <input type="text" name="plate_number" class="form-control" id="plate_number"
-                                        required="true" placeholder="Vehicle Number" max="20">
-                                        @error('plate_number')
+                                    <label for="name">Vehicle</label>
+                                    <select class="form-control" name="vehicle_id" id="vehicle_id">
+                                        <option value=""> Select Vehicle</option>
+                                        @forelse($vehicles as $vehicle)
+                                        <option value="{{$vehicle->id}}">{{$vehicle->plate_number}}</option>
+                                        @empty
+                                        @endforelse
+
+                                    </select>
+                                        @error('vehicle_id')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror                                    
                                 </div>
@@ -57,12 +64,31 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="description">Description</label>
-                                    <textarea name="description" id="description" class="form-control"
-                                        rows="5"></textarea>
-                                        @error('description')
+                                    <label for="expense_type">Expense Type</label>
+                                    <select class="form-control" name="expense_id" id="expense_id">
+                                        <option value=""> Select Expense Type</option>
+                                        @forelse($vehicleExpenseMasters as $expense)
+                                        <option value="{{$expense->id}}">{{$expense->name}}</option>
+                                        @empty
+                                        <option value=""> No Vehicle Found</option>
+                                        @endforelse
+
+                                    </select>
+                                        @error('expense_id')
+                                        <span class="text-danger">{{ $message }}</span>
+                                        @enderror                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="amount">Amount</label>
+                                    <input type="number" name="amount" id="amount" class="form-control" min="0"/>
+                                        @error('amount')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror 
                                     
@@ -71,21 +97,18 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="affiliation_no">Fuel Type</label>
-                                    <select name="fuel" id="fuel" class="form-control">
-                                        <option value="diesel">Diesel</option>
-                                        <option value="petrol">Petrol</option>
-                                        <option value="electric">Electric</option>
-                                    </select>
-                                    @error('fuel')
+                                    <label for="description">Description</label>
+                                    <textarea name="description" id="description" class="form-control"
+                                        rows="3"></textarea>
+                                        @error('description')
                                         <span class="text-danger">{{ $message }}</span>
-                                    @enderror 
+                                        @enderror 
+                                    
                                 </div>
                             </div>
                         </div>
-
 
                     </div>
                     <!-- /.card-body -->
