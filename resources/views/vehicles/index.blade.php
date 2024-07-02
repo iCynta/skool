@@ -55,10 +55,10 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($vehicles as $vehicle)
+                @forelse($expenses as $expenses)
                 <tr>
                     <td> {{ $loop->index + 1 }} </td>
-                    <td> {{ $vehicle->plate_number }} </td>
+                    <td> {{ $expenses->plate_number }} </td>
                     <td> 
                         <a href="{{route('vehicles.show',['vehicle'=>$vehicle->id])}}" class="btn btn-sm btn-primary">VIEW</a>
                         <a href="{{route('vehicles.edit',['vehicle'=>$vehicle->id])}}" class="btn btn-sm btn-warning">EDIT</a>

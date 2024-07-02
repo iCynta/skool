@@ -91,7 +91,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('vehicles', VehicleController::class); // Will create all the routes
         
         Route::get('/vehicles/expense/new', [VehicleController::class, 'CreateExpense'])->name('vehicle.expense.new');
-        Route::post('/vehicles/expense/add', [VehicleController::class, 'AddVehicleExpence'])->name('vehicle.expense.add');
+        Route::post('/vehicles/expense/add', [VehicleController::class, 'AddVehicleExpense'])->name('vehicle.expense.add');
+        Route::get('/vehicles/expense/index', [VehicleController::class, 'VehicleExpenses'])->name('vehicle.expense.index');
     });
 
     

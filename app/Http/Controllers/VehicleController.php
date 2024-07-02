@@ -126,7 +126,7 @@ class VehicleController extends Controller
         return view('vehicles.create_expense', compact('vehicleExpenseMasters', 'vehicles'));
     }
 
-    public function AddVehicleExpence(Request $request)
+    public function AddVehicleExpense(Request $request)
     {
         //dd($request->all());
         $validator = Validator::make(
@@ -154,4 +154,14 @@ class VehicleController extends Controller
             return redirect()->back()->with('error', 'Expense can not record');
         }
     }
+
+    public function VehicleExpenses(Request $request)
+    {
+        $vehicles = Vehicle::all();
+        $expenseTypes = VehicleExpenseMaster::all();
+        $expenses = VehicleExpense::with('vehicle')->with('expenseType')->get();
+        //dd($expenses);
+        return view('vehicles.expense.index', compact('vehicles', 'expenseTypes', 'expenses'));
+    }
+
 }

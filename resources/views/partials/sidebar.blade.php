@@ -145,7 +145,12 @@
                             <p>List vehicle</p>
                             </a>
                         </li>
-                        
+                        <li class="nav-item">
+                            <a href="{{route('vehicle.expense.index')}}" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Vehicle Expense</p>
+                            </a>
+                        </li>                        
                     </ul>
                 </li>
 

@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class VehicleExpense extends Model
 {
@@ -17,4 +20,23 @@ class VehicleExpense extends Model
         'fuel',
         'description'
     ];
+
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('d-M-Y h:i');
+    }
+    public function vehicle()
+    {
+        return $this->hasOne(Vehicle::class,'id');
+    }
+
+    public function expenseType()
+    {
+        return $this->hasOne(VehicleExpenseMaster::class,'id');
+    }
+
+    public function expenses()
+    {
+        return $this->hasMany(VehicleExpense::class,'expense_id');
+    }
 }
