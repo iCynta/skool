@@ -148,7 +148,11 @@ class VehicleController extends Controller
             $expense = $request->all();
             $expense['created_by'] = Auth()->user()->id;
             VehicleExpense::create($expense);
-            return redirect()->route('vehicles.show',['vehicle'=>$request->vehicle_id])->with('success','Expense successfully added');
+           // return redirect()->route('vehicles.show',['vehicle'=>$request->vehicle_id])->with('success','Expense successfully added');
+           $fleets = Vehicle::all();
+           $expenseTypes = VehicleExpenseMaster::all();
+           $expenses = VehicleExpense::with('vehicle', 'expenseType')->orderBy('id','DESC')->get();
+           return view('vehicles.expense.index', compact('fleets', 'expenseTypes', 'expenses'));
         } catch (ModelNotFoundException $e)
         {
             return redirect()->back()->with('error', 'Expense can not record');
@@ -157,11 +161,39 @@ class VehicleController extends Controller
 
     public function VehicleExpenses(Request $request)
     {
-        $vehicles = Vehicle::all();
+        $fleets = Vehicle::all();
         $expenseTypes = VehicleExpenseMaster::all();
-        $expenses = VehicleExpense::with('vehicle')->with('expenseType')->get();
+    
+        // Initialize the query
+        $query = VehicleExpense::query();
+    
+        // Apply filters if present
+        if ($request->filled('vehicle_id')) {
+            $query->where('vehicle_id', $request->vehicle_id);
+        }
+        if ($request->filled('expense_id')) {
+            $query->where('expense_id', $request->expense_id);
+        }
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+            $query->whereBetween('created_at', [$request->from_date, $request->to_date]);
+        } elseif ($request->filled('from_date')) {
+            $query->where('created_at', '>=', $request->from_date);
+        } elseif ($request->filled('to_date')) {
+            $query->where('created_at', '<=', $request->to_date);
+        }
+    
+        $expenses = $query->orderBy('id', 'DESC')->with('vehicle', 'expenseType')->paginate(10);;
         //dd($expenses);
-        return view('vehicles.expense.index', compact('vehicles', 'expenseTypes', 'expenses'));
+        return view('vehicles.expense.index', compact('fleets', 'expenseTypes', 'expenses'));
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 }

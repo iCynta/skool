@@ -27,16 +27,12 @@ class VehicleExpense extends Model
     }
     public function vehicle()
     {
-        return $this->hasOne(Vehicle::class,'id');
+        return $this->belongsTo(Vehicle::class);
     }
 
     public function expenseType()
     {
-        return $this->hasOne(VehicleExpenseMaster::class,'id');
+        return $this->belongsTo(VehicleExpenseMaster::class, 'expense_id');
     }
 
-    public function expenses()
-    {
-        return $this->hasMany(VehicleExpense::class,'expense_id');
-    }
 }

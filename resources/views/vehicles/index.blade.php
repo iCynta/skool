@@ -25,7 +25,7 @@
 <!-- /.content-header -->
 
 <!-- Main content -->
-<div class="content">
+<div class="content card">
     <div class="container-fluid">
     
     <div class="row">
@@ -55,10 +55,10 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($expenses as $expenses)
+                @forelse($vehicles as $vehicle)
                 <tr>
                     <td> {{ $loop->index + 1 }} </td>
-                    <td> {{ $expenses->plate_number }} </td>
+                    <td> {{ $vehicle->plate_number }} </td>
                     <td> 
                         <a href="{{route('vehicles.show',['vehicle'=>$vehicle->id])}}" class="btn btn-sm btn-primary">VIEW</a>
                         <a href="{{route('vehicles.edit',['vehicle'=>$vehicle->id])}}" class="btn btn-sm btn-warning">EDIT</a>

@@ -22,7 +22,7 @@
 <!-- /.content-header -->
 
 <!-- Main content -->
-<div class="content">
+<div class="content card">
     <div class="container-fluid">
     <div class="row justify-content-center">
                 <div class="col-md-8">
