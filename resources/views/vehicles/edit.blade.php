@@ -21,7 +21,7 @@
 <!-- /.content-header -->
 
 <!-- Main content -->
-<div class="content">
+<div class="content card">
     <div class="container-fluid">
         <div class="container">
             <div class="card card-secondary">
