@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\EmployeeExpenseController;
 
 Route::get('/', function () {
     return view('auth/login');
@@ -94,6 +95,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/vehicles/expense/add', [VehicleController::class, 'AddVehicleExpense'])->name('vehicle.expense.add');
         Route::get('/vehicles/expense/index', [VehicleController::class, 'VehicleExpenses'])->name('vehicle.expense.index');
     });
+
+    // Employee Expenses
+        //Vehicle Expenses
+        Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
+            Route::resource('employee/expenses', EmployeeExpenseController::class);
+        });
+
+    
 
     
 
