@@ -46,7 +46,7 @@
         </div>
     </div>
     <div class="table-responsive">
-        <table class="table table-striped table-bordered">
+        <table class="table table-sm table-striped">
             <thead class="bg-dark">
                 <tr>
                     <th> Si:No</th>
@@ -55,6 +55,7 @@
                 </tr>
             </thead>
             <tbody>
+            @php //dd($vehicles); @endphp
                 @forelse($vehicles as $vehicle)
                 <tr>
                     <td> {{ $loop->index + 1 }} </td>
@@ -69,6 +70,16 @@
                 <tr><td colspan="3" class="text-center"><p class="text-center text-warning"> No Vehicle found </p></td></tr>
                 @endforelse
             </tbody>
+            <tfoot class="bg-light">
+                    <tr>
+                        <td colspan="5">
+                        <div class="pagination justify-content-center">
+                            {{ $vehicles->links('vendor.pagination.bootstrap-4') }}
+                        </div>
+
+                        </td>
+                    </tr>
+                </tfoot>
         </table>
     </div>
     

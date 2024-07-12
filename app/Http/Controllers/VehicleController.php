@@ -17,7 +17,7 @@ class VehicleController extends Controller
     public function index()
     {
         //list
-        $vehicles = Vehicle::all();
+        $vehicles = Vehicle::paginate(10);
         return view('vehicles.index', compact('vehicles'));
     }
 
@@ -151,7 +151,7 @@ class VehicleController extends Controller
            // return redirect()->route('vehicles.show',['vehicle'=>$request->vehicle_id])->with('success','Expense successfully added');
            $fleets = Vehicle::all();
            $expenseTypes = VehicleExpenseMaster::all();
-           $expenses = VehicleExpense::with('vehicle', 'expenseType')->orderBy('id','DESC')->get();
+           $expenses = VehicleExpense::with('vehicle', 'expenseType')->orderBy('id','DESC')->paginate(10);
            return view('vehicles.expense.index', compact('fleets', 'expenseTypes', 'expenses'));
         } catch (ModelNotFoundException $e)
         {
@@ -182,7 +182,7 @@ class VehicleController extends Controller
             $query->where('created_at', '<=', $request->to_date);
         }
     
-        $expenses = $query->orderBy('id', 'DESC')->with('vehicle', 'expenseType')->paginate(10);;
+        $expenses = $query->orderBy('id', 'DESC')->with('vehicle', 'expenseType')->paginate(10);
         //dd($expenses);
         return view('vehicles.expense.index', compact('fleets', 'expenseTypes', 'expenses'));
     }

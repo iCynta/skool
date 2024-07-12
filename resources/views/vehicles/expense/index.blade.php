@@ -88,6 +88,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php //dd($expenses); @endphp
                     @forelse($expenses as $expense)    
                     <tr>
                         <td>{{ $loop->index + 1 }}</td>
