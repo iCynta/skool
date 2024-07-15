@@ -9,7 +9,9 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\EmployeeExpenseMasterController;
 use App\Http\Controllers\EmployeeExpenseController;
+
 
 Route::get('/', function () {
     return view('auth/login');
@@ -96,12 +98,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/vehicles/expense/index', [VehicleController::class, 'VehicleExpenses'])->name('vehicle.expense.index');
     });
 
-    // Employee Expenses
-        //Vehicle Expenses
-        Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
-            Route::resource('employee/expenses', EmployeeExpenseController::class);
-        });
+    // Employee Expense Masters
+    Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
+        Route::resource('employee_expense_masters', EmployeeExpenseMasterController::class);
+    });
 
+    // Employee Expenses
+    Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
+        Route::resource('employee/expenses', EmployeeExpenseController::class);
+    });
     
 
     
