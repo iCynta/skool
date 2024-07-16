@@ -11,12 +11,132 @@ use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    public function index()
-    {
-        $students = Student::with(['referredBy', 'course', 'batch', 'department'])->get();
-        return view('students.index', compact('students'));
-    }
+    public function show($id)
+{
+    $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(1);
+    
+    $disp = ''; // Initialize $disp to avoid undefined variable notice
 
+    foreach ($students as $student) {
+
+        $disp .= '<tr>';
+        $disp .= '<td>' . $student->id . '</td>';
+        $disp .= '<td>' . $student->admission_no . '</td>';
+        $disp .= '<td>' . $student->name . '</td>';
+        $disp .= '<td>' . $student->course->name . '</td>';
+        $disp .= '<td>' . $student->batch->name . '</td>';
+        $disp .= '<td>' . $student->department->name . '</td>';
+        if($student->seat_type==1)
+        {
+            $seatname="Merit Seat";
+        }
+        else if($student->seat_type==2)
+        {
+            $seatname="Management Seat";
+        }
+        
+        $disp .= '<td>' . $seatname . '</td>';
+        $disp .= '<td>';
+        
+        // Edit button
+        $disp .= '<a class="btn btn-primary" onclick="editModal(this)" 
+            data-id="' . $student->id . '" 
+            data-name="' . $student->name . '" 
+            data-dob="' . $student->dob . '"
+            data-contact_number="' . $student->contact_number . '" 
+            data-contact_person="' . $student->contact_person . '" 
+            data-student_relation="' . $student->student_relation . '" 
+            data-seat_type="' . $student->seat_type . '" 
+            data-donation="' . $student->donation . '" 
+            data-referred_by="' . $student->referred_by . '" 
+            data-address="' . $student->address . '" 
+            data-gender="' . $student->gender . '" 
+            data-admission_no="' . $student->admission_no . '" 
+            data-course="' . $student->course_id . '" 
+            data-batch="' . $student->batch_id . '" 
+            data-department="' . $student->department_id. '">Edit</a>';
+    
+        // Delete form
+        $disp .= '<form action="' . route('students.destroy', $student) . '" method="POST" style="display:inline;">';
+        $disp .= csrf_field();
+        $disp .= method_field('DELETE');
+        $disp .= '<button type="submit" class="btn btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</button>';
+        $disp .= '</form>';
+        
+        $disp .= '</td>'; // Close the last <td>
+        $disp .= '</tr>'; // Close the <tr>
+    }
+    
+    // Generate pagination links using Bootstrap 4 styling
+    $paginate = $students->links('vendor.pagination.bootstrap-4')->toHtml();
+
+    $response = [
+        'status' => 200,
+        'data' => $disp,
+        'links' => $paginate
+    ];
+
+    // Return JSON response
+
+    return response()->json($response);
+}
+    public function index(Request $request)
+    {
+        $managementUsers = User::whereHas('role', function ($query) {
+            $query->where('name', 'Management');
+        })->get();
+    
+        $courses = Course::all();
+        $batches = Batch::all();
+        $departments = Department::all();
+        $seatTypes = SeatType::all();
+        $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(10);
+ 
+    
+        return view('students.index', compact('students', 'managementUsers', 'courses', 'batches', 'departments', 'seatTypes'));
+    }
+    public function loadTable(Request $request)
+    {
+        // Adjust the pagination size as needed
+        $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(1);
+    
+        $disp = ''; // Initialize $disp to avoid undefined variable notice
+    
+        foreach ($students as $student) {
+            $disp .= '<tr>';
+            $disp .= '<td>' . $student->id . '</td>';
+            $disp .= '<td>' . $student->admission_no . '</td>';
+            $disp .= '<td>' . $student->name . '</td>';
+            $disp .= '<td>' . $student->course->name . '</td>';
+            $disp .= '<td>' . $student->batch->name . '</td>';
+            $disp .= '<td>' . $student->department->name . '</td>';
+            $disp .= '<td>' . $student->seat_type . '</td>';
+            $disp .= '<td>';
+            $disp .= '<a href="' . route('students.edit', $student) . '" class="btn btn-warning">Edit</a>';
+            $disp .= '<form action="' . route('students.destroy', $student) . '" method="POST" style="display:inline;">';
+            $disp .= csrf_field();
+            $disp .= method_field('DELETE');
+            $disp .= '<button type="submit" class="btn btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</button>';
+            $disp .= '</form>';
+            $disp .= '</td>';
+            $disp .= '</tr>';
+        }
+    
+        // Generate pagination links using Bootstrap 4 styling
+        $paginate = $students->links('vendor.pagination.bootstrap-4')->toHtml();
+    
+        $response = [
+            'status' => 200,
+            'data' => $disp,
+            'links' => $paginate
+        ];
+    
+        // Return JSON response
+    
+        return response()->json($response);
+    }
+    
+    
     public function create()
     {
         $managementUsers = User::whereHas('role', function ($query) {
@@ -28,7 +148,60 @@ class StudentController extends Controller
         $seatTypes = SeatType::all();
         return view('students.create', compact('managementUsers', 'courses', 'batches', 'departments', 'seatTypes'));
     }
+  
+public function checkBatchSeatStatus(Request $request)
+{
+    $seatid=$request->seatid;
+    $batchid=$request->batchId;
+    $course_id=$request->course_id;
 
+    $noOfStudents = Student::where('seat_type', $seatid)
+    ->where('course_id', $course_id)
+    ->where('batch_id', $batchid)
+    ->count();
+    $seatTypes = SeatType::where('id',$seatid)->first();
+    $batches = Batch::where('id',$batchid)->first();
+    $status='';
+    $msg='';
+    $totalseat='';
+    if($seatid==1)
+    {
+        $totalseat=$batches->merit_seat;
+        if($noOfStudents==$totalseat)
+        {
+            $status='NotAvailable';
+            $msg='Seat not Available ('.$noOfStudents.'/'.$totalseat.')';
+        }
+        else
+        {
+            $status='Available';
+            $msg='::Available seats:'.$totalseat;
+        }
+    }
+    else if($seatid==2)
+    {
+        $totalseat=$batches->payment_seat;
+        if($noOfStudents==$totalseat)
+        {
+            $status='NotAvailable';
+            $msg='Seat not Available ('.$noOfStudents.'/'.$totalseat.')';
+        }
+        else
+        {
+            $status='Available';
+            $msg='::Available seats:'.$totalseat;
+        }
+    }
+    $response = [
+        'status' => $status,
+        'msg' => $msg
+    ];
+
+    // Return JSON response
+    return response()->json($response);
+
+
+}
     public function store(Request $request)
     {
         $request->validate([
@@ -44,10 +217,18 @@ class StudentController extends Controller
             'course_id' => 'required|exists:courses,id',
             'batch_id' => 'required|exists:batches,id',
             'department_id' => 'required|exists:departments,id',
+            'gender' => 'required|string|max:255',
         ]);
 
         Student::create($request->all());
-        return redirect()->route('students.index')->with('success', 'Student created successfully.');
+        $response = [
+            'status' => 200,
+            'msg' => 'Student created successfully.'
+        ];
+    
+        // Return JSON response
+        return response()->json($response);
+        // return redirect()->route('students.index')->with('success', 'Student created successfully.');
     }
 
     public function edit(Student $student)
@@ -74,10 +255,18 @@ class StudentController extends Controller
             'course_id' => 'required|exists:courses,id',
             'batch_id' => 'required|exists:batches,id',
             'department_id' => 'required|exists:departments,id',
+            'gender' => 'required|string|max:255',
+            
         ]);
 
         $student->update($request->all());
-        return redirect()->route('students.index')->with('success', 'Student updated successfully.');
+        $response = [
+            'status' => 200,
+            'msg' => 'Student Updated successfully.'
+        ];
+    
+        // Return JSON response
+        return response()->json($response);
     }
 
     public function destroy(Student $student)

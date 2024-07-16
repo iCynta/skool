@@ -126,6 +126,12 @@
                             <p>List Students</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{route('students.expenses')}}" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Expenses & Fees</p>
+                            </a>
+                        </li>
                         
                     </ul>
                 </li>
@@ -200,6 +206,12 @@
                             <a href="#" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Manage Permissions</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{route('settings.expense.master')}}" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Students Expense</p>
                             </a>
                         </li>
 

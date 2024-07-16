@@ -12,6 +12,7 @@ use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\EmployeeExpenseMasterController;
 use App\Http\Controllers\EmployeeExpenseController;
 
+use App\Http\Controllers\StudentsExpenseMaster;
 
 Route::get('/', function () {
     return view('auth/login');
@@ -41,7 +42,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/schools', [SchoolController::class, 'index'])->name('schools.index');
         Route::post('/schools', [SchoolController::class, 'store'])->name('schools.add');
         Route::get('/schools/create', function () {
-            return view('schools.create');
+            return view('settings.students_expenses');
         })->name('schools.create');
     });
 
@@ -80,6 +81,14 @@ Route::group(['middleware' => 'auth'], function () {
     //Student Management
     Route::group(['middleware' => ['role:Management|Organizer']], function () {
         Route::resource('students', StudentController::class); // Will create all the routes
+        Route::post('/students/seats/check', [StudentController::class, 'checkBatchSeatStatus'])->name('students.seats.check');
+        Route::get('/students/expenses', function () {
+            return view('students.students_expenses');
+        })->name('students.expenses');
+        // Route::post('/students/expenses', [StudentController::class, 'expensesDetails'])->name('students.expenses');
+        Route::resource('students', StudentController::class)->except(['show']);
+Route::get('/students/loadTable', [StudentController::class, 'loadTable'])->name('students.loadTable');
+
     });
 
     //Vehicle Management
@@ -94,7 +103,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('vehicles', VehicleController::class); // Will create all the routes
         
         Route::get('/vehicles/expense/new', [VehicleController::class, 'CreateExpense'])->name('vehicle.expense.new');
-        Route::post('/vehicles/expense/add', [VehicleController::class, 'AddVehicleExpense'])->name('vehicle.expense.add');
+        // Route::post('/vehicles/expense/add', [VehicleController::class, 'AddVehicleExpense'])->name('vehicle.expense.add');
         Route::get('/vehicles/expense/index', [VehicleController::class, 'VehicleExpenses'])->name('vehicle.expense.index');
     });
 
@@ -109,6 +118,15 @@ Route::group(['middleware' => 'auth'], function () {
     });
     
 
-    
+       // Settings
+       Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
+        Route::get('/settings/expense/master', function () {
+            return view('settings.students_expenses');
+        })->name('settings.expense.master');
+        Route::get('/settings/expense/master/list', [StudentsExpenseMaster::class, 'loadStudentsExpense'])
+        ->name('settings.expense.master.list');
+        Route::post('/settings/expense/master/entry/{id?}', [StudentsExpenseMaster::class, 'save'])->name('settings.expense.master.entry');
+
+        });
 
 });

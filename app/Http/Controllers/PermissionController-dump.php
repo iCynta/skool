@@ -26,3 +26,5 @@ class RolePermissionController extends Controller
             ->with('success', 'Permissions updated successfully.');
     }
 }
+
+
