@@ -7,7 +7,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Employee Expense Master</h1>
+                <h1 class="m-0">Expense List</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -25,63 +25,60 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <!-- Filter Section -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Filter Options</h3>
-                    </div>
-                    <div class="card-body">
-                        <form action="{{ url('employee/expenses') }}" method="POST">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="employee_id">Employee</label>
-                                        <select class="form-control" id="employee_id" name="employee_id">
-                                            <option value="">All Employees</option>
-                                            @foreach ($employees as $employee)
-                                                <option value="{{ $employee->id }}" {{ request('employee_id') == $employee->id ? 'selected' : '' }}>{{ $employee->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="settled">Settled</label>
-                                        <select class="form-control" id="settled" name="settled">
-                                            <option value="">All</option>
-                                            <option value="0" {{ request('settled') === 0 ? 'selected' : '' }}>Not Settled</option>
-                                            <option value="1" {{ request('settled') === 1 ? 'selected' : '' }}>Settled</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>&nbsp;</label><br>
-                                        <button type="submit" class="btn btn-primary">Filter</button>
-                                        <a href="{{ route('expenses.index') }}" class="btn btn-default">Clear</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <!-- End Filter Section -->
+
 
                 <!-- Expense List -->
                 <div class="card mt-3">
                     <div class="card-header">
-                        <h3 class="card-title">Expense List</h3>
+                        <a href="{{route('expenses.create')}}" class="btn btn-md btn-success float-right"> Add</a>
                     </div>
                     <div class="card-body table-responsive">
-                        <table class="table table-bordered table-hover">
+                        <table class="table table-sm table-striped table-bordered table-hover">
                             <thead>
-                                <tr>
+                                <tr class="bg-dark">
                                     <th>#</th>
                                     <th>Voucher Number</th>
                                     <th>Employee</th>
                                     <th>Expense Type</th>
                                     <th>Settled</th>
                                     <th>Actions</th>
+                                </tr>
+                                <tr class="bg-info">
+                                    <th colspan="6">
+                                        <form action="{{ route('expenses.index') }}" method="POST">
+                                            @csrf
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+
+                                                        <select class="form-control form-control-sm" id="employee_id"
+                                                            name="employee_id">
+                                                            <option value="">All Employees</option>
+                                                            @foreach ($employees as $employee)
+                                                                <option value="{{ $employee->id }}" {{ request('employee_id') == $employee->id ? 'selected' : '' }}>{{ $employee->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    
+                                                        <select class="form-control form-control-sm" id="settled" name="settled">
+                                                            <option value="">All</option>
+                                                            <option value="0" {{ request('settled') === 0 ? 'selected' : '' }}>Not Settled</option>
+                                                            <option value="1" {{ request('settled') === 1 ? 'selected' : '' }}>Settled</option>
+                                                        </select>
+                                                    
+                                                </div>
+                                                <div class="col-md-3">
+                                                                                                           
+                                                        <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                                                        <a href="{{ route('expenses.index') }}"
+                                                            class="btn btn-sm btn-default">Clear</a>
+                                                    
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -93,8 +90,10 @@
                                         <td>{{ $expense->expenseMaster->name }}</td>
                                         <td>{{ $expense->settled ? 'Yes' : 'No' }}</td>
                                         <td>
-                                            <a href="{{ route('expenses.show', $expense->id) }}" class="btn btn-sm btn-info">View</a>
-                                            <a href="{{ route('expenses.edit', $expense->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                            <a href="{{ route('expenses.show', $expense->id) }}"
+                                                class="btn btn-sm btn-info">View</a>
+                                            <a href="{{ route('expenses.edit', $expense->id) }}"
+                                                class="btn btn-sm btn-warning">Edit</a>
                                             <!-- Add delete button if needed -->
                                         </td>
                                     </tr>

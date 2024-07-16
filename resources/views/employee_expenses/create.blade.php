@@ -38,7 +38,7 @@
                 </div>
                 <!-- /.card-header -->
                 <!-- form start -->
-                <form action="{{ route('employee.expense.add') }}" method="post">
+                <form action="{{ route('expenses.store') }}" method="post">
                     @csrf
                     <div class="card-body">
                         <div class="row">

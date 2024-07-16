@@ -12,34 +12,31 @@ use Illuminate\Http\Request;
 class StudentController extends Controller
 {
     public function show($id)
-{
-    $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(1);
-    
-    $disp = ''; // Initialize $disp to avoid undefined variable notice
+    {
+        $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(10);
 
-    foreach ($students as $student) {
+        $disp = ''; // Initialize $disp to avoid undefined variable notice
 
-        $disp .= '<tr>';
-        $disp .= '<td>' . $student->id . '</td>';
-        $disp .= '<td>' . $student->admission_no . '</td>';
-        $disp .= '<td>' . $student->name . '</td>';
-        $disp .= '<td>' . $student->course->name . '</td>';
-        $disp .= '<td>' . $student->batch->name . '</td>';
-        $disp .= '<td>' . $student->department->name . '</td>';
-        if($student->seat_type==1)
-        {
-            $seatname="Merit Seat";
-        }
-        else if($student->seat_type==2)
-        {
-            $seatname="Management Seat";
-        }
-        
-        $disp .= '<td>' . $seatname . '</td>';
-        $disp .= '<td>';
-        
-        // Edit button
-        $disp .= '<a class="btn btn-primary" onclick="editModal(this)" 
+        foreach ($students as $student) {
+
+            $disp .= '<tr>';
+            $disp .= '<td>' . $student->id . '</td>';
+            $disp .= '<td>' . $student->admission_no . '</td>';
+            $disp .= '<td>' . $student->name . '</td>';
+            $disp .= '<td>' . $student->course->name . '</td>';
+            $disp .= '<td>' . $student->batch->name . '</td>';
+            $disp .= '<td>' . $student->department->name . '</td>';
+            if ($student->seat_type == 1) {
+                $seatname = "Merit Seat";
+            } else if ($student->seat_type == 2) {
+                $seatname = "Management Seat";
+            }
+
+            $disp .= '<td>' . $seatname . '</td>';
+            $disp .= '<td>';
+
+            // Edit button
+            $disp .= '<a class="btn btn-primary" onclick="editModal(this)" 
             data-id="' . $student->id . '" 
             data-name="' . $student->name . '" 
             data-dob="' . $student->dob . '"
@@ -54,54 +51,54 @@ class StudentController extends Controller
             data-admission_no="' . $student->admission_no . '" 
             data-course="' . $student->course_id . '" 
             data-batch="' . $student->batch_id . '" 
-            data-department="' . $student->department_id. '">Edit</a>';
-    
-        // Delete form
-        $disp .= '<form action="' . route('students.destroy', $student) . '" method="POST" style="display:inline;">';
-        $disp .= csrf_field();
-        $disp .= method_field('DELETE');
-        $disp .= '<button type="submit" class="btn btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</button>';
-        $disp .= '</form>';
-        
-        $disp .= '</td>'; // Close the last <td>
-        $disp .= '</tr>'; // Close the <tr>
+            data-department="' . $student->department_id . '">Edit</a>';
+
+            // Delete form
+            $disp .= '<form action="' . route('students.destroy', $student) . '" method="POST" style="display:inline;">';
+            $disp .= csrf_field();
+            $disp .= method_field('DELETE');
+            $disp .= '<button type="submit" class="btn btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</button>';
+            $disp .= '</form>';
+
+            $disp .= '</td>'; // Close the last <td>
+            $disp .= '</tr>'; // Close the <tr>
+        }
+
+        // Generate pagination links using Bootstrap 4 styling
+        $paginate = $students->links('vendor.pagination.bootstrap-4')->toHtml();
+
+        $response = [
+            'status' => 200,
+            'data' => $disp,
+            'links' => $paginate
+        ];
+
+        // Return JSON response
+
+        return response()->json($response);
     }
-    
-    // Generate pagination links using Bootstrap 4 styling
-    $paginate = $students->links('vendor.pagination.bootstrap-4')->toHtml();
-
-    $response = [
-        'status' => 200,
-        'data' => $disp,
-        'links' => $paginate
-    ];
-
-    // Return JSON response
-
-    return response()->json($response);
-}
     public function index(Request $request)
     {
         $managementUsers = User::whereHas('role', function ($query) {
             $query->where('name', 'Management');
         })->get();
-    
+
         $courses = Course::all();
         $batches = Batch::all();
         $departments = Department::all();
         $seatTypes = SeatType::all();
         $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(10);
- 
-    
+
+
         return view('students.index', compact('students', 'managementUsers', 'courses', 'batches', 'departments', 'seatTypes'));
     }
     public function loadTable(Request $request)
     {
         // Adjust the pagination size as needed
-        $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(1);
-    
+        $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(10);
+
         $disp = ''; // Initialize $disp to avoid undefined variable notice
-    
+
         foreach ($students as $student) {
             $disp .= '<tr>';
             $disp .= '<td>' . $student->id . '</td>';
@@ -121,22 +118,22 @@ class StudentController extends Controller
             $disp .= '</td>';
             $disp .= '</tr>';
         }
-    
+
         // Generate pagination links using Bootstrap 4 styling
         $paginate = $students->links('vendor.pagination.bootstrap-4')->toHtml();
-    
+
         $response = [
             'status' => 200,
             'data' => $disp,
             'links' => $paginate
         ];
-    
+
         // Return JSON response
-    
+
         return response()->json($response);
     }
-    
-    
+
+
     public function create()
     {
         $managementUsers = User::whereHas('role', function ($query) {
@@ -148,60 +145,51 @@ class StudentController extends Controller
         $seatTypes = SeatType::all();
         return view('students.create', compact('managementUsers', 'courses', 'batches', 'departments', 'seatTypes'));
     }
-  
-public function checkBatchSeatStatus(Request $request)
-{
-    $seatid=$request->seatid;
-    $batchid=$request->batchId;
-    $course_id=$request->course_id;
 
-    $noOfStudents = Student::where('seat_type', $seatid)
-    ->where('course_id', $course_id)
-    ->where('batch_id', $batchid)
-    ->count();
-    $seatTypes = SeatType::where('id',$seatid)->first();
-    $batches = Batch::where('id',$batchid)->first();
-    $status='';
-    $msg='';
-    $totalseat='';
-    if($seatid==1)
+    public function checkBatchSeatStatus(Request $request)
     {
-        $totalseat=$batches->merit_seat;
-        if($noOfStudents==$totalseat)
-        {
-            $status='NotAvailable';
-            $msg='Seat not Available ('.$noOfStudents.'/'.$totalseat.')';
+        $seatid = $request->seatid;
+        $batchid = $request->batchId;
+        $course_id = $request->course_id;
+
+        $noOfStudents = Student::where('seat_type', $seatid)
+            ->where('course_id', $course_id)
+            ->where('batch_id', $batchid)
+            ->count();
+        $seatTypes = SeatType::where('id', $seatid)->first();
+        $batches = Batch::where('id', $batchid)->first();
+        $status = '';
+        $msg = '';
+        $totalseat = '';
+        if ($seatid == 1) {
+            $totalseat = $batches->merit_seat;
+            if ($noOfStudents == $totalseat) {
+                $status = 'NotAvailable';
+                $msg = 'Seat not Available (' . $noOfStudents . '/' . $totalseat . ')';
+            } else {
+                $status = 'Available';
+                $msg = '::Available seats:' . $totalseat;
+            }
+        } else if ($seatid == 2) {
+            $totalseat = $batches->payment_seat;
+            if ($noOfStudents == $totalseat) {
+                $status = 'NotAvailable';
+                $msg = 'Seat not Available (' . $noOfStudents . '/' . $totalseat . ')';
+            } else {
+                $status = 'Available';
+                $msg = '::Available seats:' . $totalseat;
+            }
         }
-        else
-        {
-            $status='Available';
-            $msg='::Available seats:'.$totalseat;
-        }
+        $response = [
+            'status' => $status,
+            'msg' => $msg
+        ];
+
+        // Return JSON response
+        return response()->json($response);
+
+
     }
-    else if($seatid==2)
-    {
-        $totalseat=$batches->payment_seat;
-        if($noOfStudents==$totalseat)
-        {
-            $status='NotAvailable';
-            $msg='Seat not Available ('.$noOfStudents.'/'.$totalseat.')';
-        }
-        else
-        {
-            $status='Available';
-            $msg='::Available seats:'.$totalseat;
-        }
-    }
-    $response = [
-        'status' => $status,
-        'msg' => $msg
-    ];
-
-    // Return JSON response
-    return response()->json($response);
-
-
-}
     public function store(Request $request)
     {
         $request->validate([
@@ -225,7 +213,7 @@ public function checkBatchSeatStatus(Request $request)
             'status' => 200,
             'msg' => 'Student created successfully.'
         ];
-    
+
         // Return JSON response
         return response()->json($response);
         // return redirect()->route('students.index')->with('success', 'Student created successfully.');
@@ -256,7 +244,7 @@ public function checkBatchSeatStatus(Request $request)
             'batch_id' => 'required|exists:batches,id',
             'department_id' => 'required|exists:departments,id',
             'gender' => 'required|string|max:255',
-            
+
         ]);
 
         $student->update($request->all());
@@ -264,7 +252,7 @@ public function checkBatchSeatStatus(Request $request)
             'status' => 200,
             'msg' => 'Student Updated successfully.'
         ];
-    
+
         // Return JSON response
         return response()->json($response);
     }

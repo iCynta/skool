@@ -17,6 +17,7 @@ class EmployeeExpense extends Model
         'created_by',
         'settled',
     ];
+    protected $table= "employee_expenses";
 
     public function employee()
     {

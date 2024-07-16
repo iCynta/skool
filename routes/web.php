@@ -115,18 +115,17 @@ Route::get('/students/loadTable', [StudentController::class, 'loadTable'])->name
     // Employee Expenses
     Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () { 
         Route::resource('employee/expenses', EmployeeExpenseController::class);
+    });    
+
+    // Settings
+    Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
+    Route::get('/settings/expense/master', function () {
+        return view('settings.students_expenses');
+    })->name('settings.expense.master');
+    Route::get('/settings/expense/master/list', [StudentsExpenseMaster::class, 'loadStudentsExpense'])
+    ->name('settings.expense.master.list');
+    Route::post('/settings/expense/master/entry/{id?}', [StudentsExpenseMaster::class, 'save'])->name('settings.expense.master.entry');
+
     });
-    
-
-       // Settings
-       Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
-        Route::get('/settings/expense/master', function () {
-            return view('settings.students_expenses');
-        })->name('settings.expense.master');
-        Route::get('/settings/expense/master/list', [StudentsExpenseMaster::class, 'loadStudentsExpense'])
-        ->name('settings.expense.master.list');
-        Route::post('/settings/expense/master/entry/{id?}', [StudentsExpenseMaster::class, 'save'])->name('settings.expense.master.entry');
-
-        });
 
 });

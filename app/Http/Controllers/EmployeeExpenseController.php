@@ -44,24 +44,32 @@ class EmployeeExpenseController extends Controller
 
     public function store(Request $request)
     {
+ 
         $validatedData = $request->validate([
-            'employee_id' => 'required|exists:employees,id',
+            'employee_id' => 'required|exists:users,id',
             'expense_id' => 'required|exists:employee_expense_masters,id',
-            'voucher_no' => 'required|string|max:20|unique:employee_expenses,voucher_no',
-            'created_by' => 'required|exists:users,id',
-            'settled' => 'required|boolean',
+            //'voucher_no' => 'required|string|max:20|unique:employee_expenses,voucher_no',
+            ///'created_by' => 'required|exists:users,id',
+            // 'settled' => 'required|boolean',
         ]);
+        //dd($validatedData);
+    
+        try {
+            $expense = new EmployeeExpense();
+            $expense->employee_id = $validatedData['employee_id'];
+            $expense->expense_id = $validatedData['expense_id'];
+            $expense->voucher_no = rand(100000, 999999) . now()->format('YmdHis');
+            $expense->created_by = auth()->id();
+            $expense->settled = 0;
+            $expense->save();
 
-        $expense = new EmployeeExpense();
-        $expense->employee_id = $validatedData['employee_id'];
-        $expense->expense_id = $validatedData['expense_id'];
-        $expense->voucher_no = $validatedData['voucher_no'];
-        $expense->created_by = $validatedData['created_by'];
-        $expense->settled = $validatedData['settled'];
-        $expense->save();
-
-        return redirect()->route('employee.expenses.index')->with('success', 'Expense added successfully!');
+            return redirect()->route('expenses.index')->with('success', 'Expense added successfully!');
+        } catch (\Exception $e) {
+            \Log::error('Error saving EmployeeExpense: ' . $e->getMessage());
+            return redirect()->back()->withInput()->withErrors(['error' => 'An error occurred while saving the expense. Please try again.']);
+        }
     }
+    
 
     public function show($id)
     {
