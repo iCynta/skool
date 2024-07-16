@@ -104,7 +104,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     // Employee Expenses
-    Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
+    Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () { 
         Route::resource('employee/expenses', EmployeeExpenseController::class);
     });
     

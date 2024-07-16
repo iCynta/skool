@@ -31,7 +31,7 @@
                         <h3 class="card-title">Filter Options</h3>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('employee-expenses.index') }}" method="GET">
+                        <form action="{{ url('employee/expenses') }}" method="POST">
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
@@ -58,7 +58,7 @@
                                     <div class="form-group">
                                         <label>&nbsp;</label><br>
                                         <button type="submit" class="btn btn-primary">Filter</button>
-                                        <a href="{{ route('employee-expenses.index') }}" class="btn btn-default">Clear</a>
+                                        <a href="{{ route('expenses.index') }}" class="btn btn-default">Clear</a>
                                     </div>
                                 </div>
                             </div>
@@ -85,7 +85,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($employeeExpenses as $expense)
+                                @forelse ($expenses as $expense)
                                     <tr>
                                         <td>{{ $loop->index + 1 }}</td>
                                         <td>{{ $expense->voucher_no }}</td>
@@ -93,8 +93,8 @@
                                         <td>{{ $expense->expenseMaster->name }}</td>
                                         <td>{{ $expense->settled ? 'Yes' : 'No' }}</td>
                                         <td>
-                                            <a href="{{ route('employee-expenses.show', $expense->id) }}" class="btn btn-sm btn-info">View</a>
-                                            <a href="{{ route('employee-expenses.edit', $expense->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                            <a href="{{ route('expenses.show', $expense->id) }}" class="btn btn-sm btn-info">View</a>
+                                            <a href="{{ route('expenses.edit', $expense->id) }}" class="btn btn-sm btn-warning">Edit</a>
                                             <!-- Add delete button if needed -->
                                         </td>
                                     </tr>
@@ -108,7 +108,7 @@
                     </div>
                     <div class="card-footer clearfix">
                         <div class="float-right">
-                            {{ $employeeExpenses->withQueryString()->links('vendor.pagination.bootstrap-4') }}
+                            {{ $expenses->withQueryString()->links('vendor.pagination.bootstrap-4') }}
                         </div>
                     </div>
                 </div>

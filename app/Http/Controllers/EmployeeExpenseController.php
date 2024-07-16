@@ -15,6 +15,7 @@ class EmployeeExpenseController extends Controller
      */
     public function index(Request $request)
     {
+        $employees = User::all();
         $query = EmployeeExpense::with('employee', 'expenseMaster');
 
         // Apply filters
@@ -27,17 +28,17 @@ class EmployeeExpenseController extends Controller
         }
 
         // Retrieve filtered expenses
-        $expenses = $query->get();
+        $expenses = $query->paginate(10);
 
         // Return view with filtered expenses
-        return view('employee_expenses.index', compact('expenses'));
+        return view('employee_expenses.index', compact('expenses', 'employees'));
     }
 
     public function create()
     {
         $employees = User::all();
-        $expenseMasters = EmployeeExpenseMaster::all();
-        return view('employee_expenses.create', compact('employees', 'expenseMasters'));
+        $expenseTypes = EmployeeExpenseMaster::all();
+        return view('employee_expenses.create', compact('employees', 'expenseTypes'));
     }
 
     public function store(Request $request)
