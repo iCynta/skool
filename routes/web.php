@@ -115,6 +115,9 @@ Route::get('/students/loadTable', [StudentController::class, 'loadTable'])->name
     // Employee Expenses
     Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () { 
         Route::resource('employee/expenses', EmployeeExpenseController::class);
+        //Print Voucher
+        Route::get('expense/voucher/print/{voucher}', [EmployeeExpenseController::class, 'printExpenseVoucher'])->name('print.expense.voucher');
+
     });    
 
     // Settings

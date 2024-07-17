@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('employee_id');
             $table->unsignedBigInteger('expense_id');
             $table->unsignedBigInteger('created_by');
+            $table->decimal('amount', 8, 2);
             $table->boolean('settled')->default(false);
             $table->softDeletes();
             $table->timestamps();

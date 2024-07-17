@@ -51,5 +51,6 @@
     <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
 
     @stack('scripts')
+
 </body>
 </html>
