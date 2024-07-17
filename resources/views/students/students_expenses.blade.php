@@ -97,7 +97,7 @@
                             <th>ID</th>
                             <th>Expense Name</th>
                             <th>ReceiptNo</th>
-                            <th>Action</th>
+                            <th>Amount</th>
                         </tr>
                     </thead>
                     <tbody>
