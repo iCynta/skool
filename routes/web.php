@@ -6,10 +6,12 @@ use App\Http\Controllers\BatchController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\RecieptController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\StudentsExpenseMaster;
+use App\Http\Controllers\StudentsExpenseController;
 
 Route::get('/', function () {
     return view('auth/login');
@@ -79,12 +81,15 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => ['role:Management|Organizer']], function () {
         Route::resource('students', StudentController::class); // Will create all the routes
         Route::post('/students/seats/check', [StudentController::class, 'checkBatchSeatStatus'])->name('students.seats.check');
-        Route::get('/students/expenses', function () {
-            return view('students.students_expenses');
-        })->name('students.expenses');
+        Route::post('/students/admission/check', [StudentController::class, 'searchAdmissions'])->name('students.admission.check');
+        Route::get('/student/expenses', [StudentsExpenseController::class, 'index'])->name('student.expenses');
+        Route::post('/student/expenses/details', [StudentsExpenseController::class, 'searchStudentsDetails'])->name('student.expenses.details');
+        Route::post('/student/expenses/reciepts', [StudentsExpenseController::class, 'loadExpenseReciepts'])->name('student.expenses.reciepts');
+        Route::post('/student/expenses/reciepts/save', [StudentsExpenseController::class, 'store'])->name('student.expenses.reciepts.save');
         // Route::post('/students/expenses', [StudentController::class, 'expensesDetails'])->name('students.expenses');
         Route::resource('students', StudentController::class)->except(['show']);
 Route::get('/students/loadTable', [StudentController::class, 'loadTable'])->name('students.loadTable');
+Route::get('/reciepts/{id}', [RecieptController::class, 'view'])->name('reciepts');
 
     });
 

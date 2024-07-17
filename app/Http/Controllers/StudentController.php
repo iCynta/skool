@@ -202,6 +202,15 @@ public function checkBatchSeatStatus(Request $request)
 
 
 }
+public function searchAdmissions(Request $request)
+{
+    $query = $request->input('query');
+    $admissions = Student::where('admission_no', 'LIKE', "%{$query}%")->get();
+
+    return response()->json($admissions->map(function ($student) {
+        return ['id' => $student->id, 'text' => $student->admission_no.' ('.$student->name.')'];
+    }));
+}
     public function store(Request $request)
     {
         $request->validate([
