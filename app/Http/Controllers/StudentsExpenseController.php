@@ -88,10 +88,11 @@ class StudentsExpenseController extends Controller
             $std=StudentsExpenseMasterModel::where('id',$student->expense_id)->first();
             $disp .= '<tr>';
             $disp .= '<td>' . $student->id . '</td>';
+            $disp .= '<td>' . $student->created_at . '</td>';
             $disp .= '<td>' . $std->expense_name . '</td>';
             $disp .= '<td><a  target="_blank" href="' . route('reciepts', ['id' => $student->reciept_no]) . '">' . $student->reciept_no . '</a></td>';
             $disp .= '<td>' . $student->amount . '</td>';
-            $disp .= '<td></td>';
+            $disp .= '<td><button type="button" class="btn btn-danger" data-id="'.$student->id.'" data-expense_name ="'.$student->expense_id.'"  data-amount ="'.$student->amount.'"onclick="editExpense(this)">Edit</button></td>';
             $disp .= '</tr>';
         }
 
@@ -128,5 +129,24 @@ class StudentsExpenseController extends Controller
         // Return JSON response
       return response()->json($response);
    
+    }
+    public function update(Request $request, $id=null)
+    {
+           
+        $update=['expense_id'=>$request->expense_id,'amount'=>$request->amount];
+        if ($id) {
+            
+            // Find the existing expense
+            $expense = StudentsExpense::findOrFail($id);
+           
+            $expense->update($update); // Update the expense
+            $response = [
+                'status' => 200,
+                'msg' => 'Student Updated successfully.'
+            ];
+        } 
+
+           // Return JSON response
+           return response()->json($response);
     }
 }

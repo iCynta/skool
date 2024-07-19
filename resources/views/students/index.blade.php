@@ -35,7 +35,7 @@
     <div class="row">
         <div class="container mt-2 pb-2">
             <div class="row justify-content-center">
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <!-- Message Board -->
                     <div class="row justify-content-center">
                         <div class="col-md-10">
@@ -44,27 +44,28 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <!-- <a class="btn btn-lg btn-success mr-2" href="{{ route('students.create') }}">Add</a> -->
-                    <a class="btn btn-lg btn-success mr-2" onclick="openModal(0)">Add</a>
-                </div>
+                <div class="col-md-2 ml-auto">
+    <!-- <a class="btn btn-lg btn-success mr-2" href="{{ route('students.create') }}">Add</a> -->
+    <a class="btn btn-lg btn-success mr-2" onclick="openModal(0)">Add</a>
+</div>
+
             </div>            
         </div>
     </div>
     <div class="table-responsive">
     <table class="table table-striped" id="student-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Admission No</th>
-                    <th>Name</th>
-                    <th>Course</th>
-                    <th>Batch</th>
-                    <th>Department</th>
-                    <th>Seat Type</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
+    <thead>
+                            <tr>
+                                <th><input type="text" id="filter-id" placeholder="ID"></th>
+                                <th><input type="text" id="filter-admission_no" placeholder="Admission No"></th>
+                                <th><input type="text" id="filter-name" placeholder="Name"></th>
+                                <th><input type="text" id="filter-course" placeholder="Course"></th>
+                                <th><input type="text" id="filter-batch" placeholder="Batch"></th>
+                                <th><input type="text" id="filter-department" placeholder="Department"></th>
+                                <th><input type="text" id="filter-seat_type" placeholder="Seat Type"></th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
             <tbody>
                 <!-- Content will be loaded here -->
             </tbody>
@@ -459,27 +460,42 @@ function seatFromBatchCheck(batchId)
         });
 }
 
-            loadTable();
+loadTable();
 
-            function loadTable(page = 1) {
-                $.ajax({
-                    url: '{{ route("students.loadTable") }}',
-                    data: { page: page },
-                    success: function(response) {
-                        if (response.status === 200) {
-                            $('#student-table tbody').html(response.data);
-                            $('#pagination-links').html(response.links);
-                        }
-                    }
-                });
+function loadTable(page = 1) {
+    let filters = {
+        id: $('#filter-id').val(),
+        admission_no: $('#filter-admission_no').val(),
+        name: $('#filter-name').val(),
+        course: $('#filter-course').val(),
+        batch: $('#filter-batch').val(),
+        department: $('#filter-department').val(),
+        seat_type: $('#filter-seat_type').val()
+    };
+
+    $.ajax({
+        url: '{{ route("students.loadTable") }}',
+        data: { page: page, filters: filters },
+        success: function(response) {
+            if (response.status === 200) {
+                $('#student-table tbody').html(response.data);
+                $('#pagination-links').html(response.links);
             }
+        }
+    });
+}
 
-            $(document).on('click', '#pagination-links a', function(e) {
-                e.preventDefault();
-                var url = $(this).attr('href');
-                var page = url.split('page=')[1];
-                loadTable(page);
-            });
+// Filter input event listener
+$('input[id^="filter-"]').on('keyup', function() {
+    loadTable();
+});
+
+$(document).on('click', '#pagination-links a', function(e) {
+    e.preventDefault();
+    var url = $(this).attr('href');
+    var page = url.split('page=')[1];
+    loadTable(page);
+});
     
 </script>
 <!-- /.content -->

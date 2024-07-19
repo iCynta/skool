@@ -47,7 +47,7 @@
                 <div class="form-group d-flex">
                     <select id="admissionSearch" class="form-control" style="width: 100%; height:50px;"></select>
                     <button class="btn btn-primary ml-2" id="searchButton">Search</button>
-                    <button class="btn btn-secondary ml-2" id="resetButton">Reset</button>
+                    <button class="btn btn-secondary ml-2" id="resetButton" onclick="location.reload();">Reset</button>
                 </div>
                 <div class="info-box" id="infoBox" style="display: none;">
     <ul style="list-style-type: none; padding: 0; margin: 0;">
@@ -87,6 +87,9 @@
                 </div>
                 <div class="form-group mt-3 text-right">
     <button class="btn btn-success" id="submitFeeButton" style="display: none;">Make Payment</button>
+    <button class="btn btn-success" id="updateFeeButton" style="display:none;">Edit Payment</button>
+    <button class="btn btn-warning" id="resetFeeButton" style="display:none;" onclick="ResetExpense();">Reset</button>
+    <input type="text" id="expenseid" style="display:none;"/>
 </div>
                 <div class="suggestions" id="suggestions" style="display: none;"></div>
             </div>
@@ -95,9 +98,11 @@
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Date</th>
                             <th>Expense Name</th>
                             <th>ReceiptNo</th>
                             <th>Amount</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -218,9 +223,65 @@ $(document).ready(function() {
             }
         });
     });
-});
-                        
+    $('#updateFeeButton').click(function() {
+           // Get values from the modal inputs
+           var feeAmount = $('#feeAmount').val();
+   var expenseId = $('#expenseSelect').val();
+   var id=$('#expenseid').val();
+  const url = '{{ route('student.expenses.reciepts.update', '') }}' + '/' + id;
 
+
+        // Send the AJAX request
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                amount: feeAmount,
+                expense_id: expenseId,
+               
+            },
+            success: function(response) {
+                // Handle success response
+                Swal.fire({
+                    title: response.msg,
+                    icon: "success"
+                });
+                loadExpenses();
+                ResetExpense();
+            },
+            error: function(xhr, status, error) {
+                // Handle error response
+                console.error('Error saving data', error);
+            }
+        });
+    
+    });
+});
+function editExpense(val)
+{
+    const id = val.getAttribute('data-id');
+    const expense_name = val.getAttribute('data-expense_name');
+    const amount = val.getAttribute('data-amount');
+    $('#expenseSelect').val(expense_name);
+    $('#feeAmount').val(amount);
+    $('#expenseid').val(id);
+    $('#submitFeeButton').hide();
+    $('#updateFeeButton').show();
+    $('#resetFeeButton').show();
+
+}
+function ResetExpense()
+{
+
+    $('#expenseSelect').val('');
+    $('#feeAmount').val('');
+    $('#expenseid').val('');
+    $('#submitFeeButton').show();
+    $('#updateFeeButton').hide();
+    $('#resetFeeButton').hide();
+
+}
 function loadExpenses()
 {
     $.ajax({
