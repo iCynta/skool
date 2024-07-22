@@ -11,7 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::create('vehicle_expense_master', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 191);
+            $table->softDeletes(); // Adds the deleted_at column
+            $table->timestamps();
+        });
     }
 
     /**
@@ -19,11 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::create('vehicle_expense_master', function (Blueprint $table) {
-            $table->id();
-            $table->string('name',191);
-            $table->softDeletes(); // Adds the deleted_at column
-            $table->timestamps();
-        });
+        Schema::dropIfExists('vehicle_expense_master');
     }
 };
