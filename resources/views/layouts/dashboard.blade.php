@@ -49,6 +49,7 @@
     <script src="{{ asset('dist/js/adminlte.js') }}"></script>
 
     <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
     @stack('scripts')
 

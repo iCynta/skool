@@ -11,14 +11,44 @@ use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    public function show($id)
+    public function show(Request $request)
     {
-        $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(10);
-
-        $disp = ''; // Initialize $disp to avoid undefined variable notice
-
+        $filters = $request->get('filters', []);
+    
+        $query = Student::with(['referredBy', 'course', 'batch', 'department']);
+    
+        if (!empty($filters['id'])) {
+            $query->where('id', $filters['id']);
+        }
+        if (!empty($filters['admission_no'])) {
+            $query->where('admission_no', 'like', '%' . $filters['admission_no'] . '%');
+        }
+        if (!empty($filters['name'])) {
+            $query->where('name', 'like', '%' . $filters['name'] . '%');
+        }
+        if (!empty($filters['course'])) {
+            $query->whereHas('course', function($q) use ($filters) {
+                $q->where('name', 'like', '%' . $filters['course'] . '%');
+            });
+        }
+        if (!empty($filters['batch'])) {
+            $query->whereHas('batch', function($q) use ($filters) {
+                $q->where('name', 'like', '%' . $filters['batch'] . '%');
+            });
+        }
+        if (!empty($filters['department'])) {
+            $query->whereHas('department', function($q) use ($filters) {
+                $q->where('name', 'like', '%' . $filters['department'] . '%');
+            });
+        }
+        if (!empty($filters['seat_type'])) {
+            $query->where('seat_type', $filters['seat_type']);
+        }
+    
+        $students = $query->paginate(10);
+    
+        $disp = '';
         foreach ($students as $student) {
-
             $disp .= '<tr>';
             $disp .= '<td>' . $student->id . '</td>';
             $disp .= '<td>' . $student->admission_no . '</td>';
@@ -26,57 +56,49 @@ class StudentController extends Controller
             $disp .= '<td>' . $student->course->name . '</td>';
             $disp .= '<td>' . $student->batch->name . '</td>';
             $disp .= '<td>' . $student->department->name . '</td>';
-            if ($student->seat_type == 1) {
-                $seatname = "Merit Seat";
-            } else if ($student->seat_type == 2) {
-                $seatname = "Management Seat";
+            if($student->seat_type==1) {
+                $seatname="Merit Seat";
+            } else if($student->seat_type==2) {
+                $seatname="Management Seat";
             }
-
             $disp .= '<td>' . $seatname . '</td>';
             $disp .= '<td>';
-
-            // Edit button
             $disp .= '<a class="btn btn-primary" onclick="editModal(this)" 
-            data-id="' . $student->id . '" 
-            data-name="' . $student->name . '" 
-            data-dob="' . $student->dob . '"
-            data-contact_number="' . $student->contact_number . '" 
-            data-contact_person="' . $student->contact_person . '" 
-            data-student_relation="' . $student->student_relation . '" 
-            data-seat_type="' . $student->seat_type . '" 
-            data-donation="' . $student->donation . '" 
-            data-referred_by="' . $student->referred_by . '" 
-            data-address="' . $student->address . '" 
-            data-gender="' . $student->gender . '" 
-            data-admission_no="' . $student->admission_no . '" 
-            data-course="' . $student->course_id . '" 
-            data-batch="' . $student->batch_id . '" 
-            data-department="' . $student->department_id . '">Edit</a>';
-
-            // Delete form
+                data-id="' . $student->id . '" 
+                data-name="' . $student->name . '" 
+                data-dob="' . $student->dob . '"
+                data-contact_number="' . $student->contact_number . '" 
+                data-contact_person="' . $student->contact_person . '" 
+                data-student_relation="' . $student->student_relation . '" 
+                data-seat_type="' . $student->seat_type . '" 
+                data-donation="' . $student->donation . '" 
+                data-referred_by="' . $student->referred_by . '" 
+                data-address="' . $student->address . '" 
+                data-gender="' . $student->gender . '" 
+                data-admission_no="' . $student->admission_no . '" 
+                data-course="' . $student->course_id . '" 
+                data-batch="' . $student->batch_id . '" 
+                data-department="' . $student->department_id. '">Edit</a>';
             $disp .= '<form action="' . route('students.destroy', $student) . '" method="POST" style="display:inline;">';
             $disp .= csrf_field();
             $disp .= method_field('DELETE');
             $disp .= '<button type="submit" class="btn btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</button>';
             $disp .= '</form>';
-
-            $disp .= '</td>'; // Close the last <td>
-            $disp .= '</tr>'; // Close the <tr>
+            $disp .= '</td>';
+            $disp .= '</tr>';
         }
-
-        // Generate pagination links using Bootstrap 4 styling
+    
         $paginate = $students->links('vendor.pagination.bootstrap-4')->toHtml();
-
+    
         $response = [
             'status' => 200,
             'data' => $disp,
             'links' => $paginate
         ];
-
-        // Return JSON response
-
+    
         return response()->json($response);
     }
+    
     public function index(Request $request)
     {
         $managementUsers = User::whereHas('role', function ($query) {
@@ -95,7 +117,7 @@ class StudentController extends Controller
     public function loadTable(Request $request)
     {
         // Adjust the pagination size as needed
-        $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(10);
+        $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(100);
 
         $disp = ''; // Initialize $disp to avoid undefined variable notice
 
@@ -189,7 +211,16 @@ class StudentController extends Controller
         return response()->json($response);
 
 
-    }
+}
+public function searchAdmissions(Request $request)
+{
+    $query = $request->input('query');
+    $admissions = Student::where('admission_no', 'LIKE', "%{$query}%")->get();
+
+    return response()->json($admissions->map(function ($student) {
+        return ['id' => $student->id, 'text' => $student->admission_no.' ('.$student->name.')'];
+    }));
+}
     public function store(Request $request)
     {
         $request->validate([

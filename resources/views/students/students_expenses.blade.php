@@ -1,96 +1,301 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Admission No</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        .suggestions {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            max-height: 150px;
-            overflow-y: auto;
-            position: absolute;
-            z-index: 1000;
-            background: white;
-        }
-        .suggestion-item {
-            padding: 10px;
-            cursor: pointer;
-        }
-        .suggestion-item:hover {
-            background-color: #f0f0f0;
-        }
-    </style>
-</head>
-<body>
-    <div class="container mt-5">
-        <h2>Search Admission No</h2>
-        <div class="form-group">
-            <label for="admissionSearch">Admission No:</label>
-            <input type="text" class="form-control" id="admissionSearch" placeholder="Enter Admission No">
-            <div class="suggestions" id="suggestions" style="display: none;"></div>
+@extends('layouts.dashboard')
+
+@section('title', 'Dashboard')
+
+@section('content')
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<style>
+    .modal-content {
+        border-radius: 15px; /* Adjust the value as needed */
+    }
+    .info-box {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+    .info-box p {
+        margin: 0; /* Remove default margin */
+    }
+</style>
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Students</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item">Dashboard</li>
+                    <li class="breadcrumb-item">Students</li>
+                    <li class="breadcrumb-item active"><a href="#">New</a></li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="container mt-5">
+                <h2>Search Admission No</h2>
+                <div class="form-group d-flex">
+                    <select id="admissionSearch" class="form-control" style="width: 100%; height:50px;"></select>
+                    <button class="btn btn-primary ml-2" id="searchButton">Search</button>
+                    <button class="btn btn-secondary ml-2" id="resetButton" onclick="location.reload();">Reset</button>
+                </div>
+                <div class="info-box" id="infoBox" style="display: none;">
+    <ul style="list-style-type: none; padding: 0; margin: 0;">
+       <strong> <li>Name: <span id="name"></span></li>
+       <li>DOB: <span id="dob"></span></li>
+        <li>Batch: <span id="batchInfo"></span></li>
+        <li>Course: <span id="course"></span></li>
+        <li>Department: <span id="department"></span></li>
+        <li>CourseFee: <span id="coursefee"></span></li>
+        <li>Tenure: <span id="tenuture"></span></li>
+        <li>Donation: <span id="donation"></span></li>
+        <li>Installments Paid: <span id="paidinst"></span></li>
+        <li>Total Amount Paid: <span id="TotalamtPaid"></span></li>
+        <li>Balance Fee: <span id="balancefee"></span></li>
+        
+    </strong>
+    </ul>
+</div>
+
+                <div class="form-group mt-3" id="expenseDropdown" style="display: none;">
+                    <label for="expenseSelect">Select Expense:</label>
+              
+                    <select class="form-control" id="expenseSelect">
+                        <option value="">Select an expense</option>
+                       
+                        @foreach ($expenses as $exprow)
+                        <option value="{{$exprow['id']}}">{{$exprow['expense_name']}}</option>
+                        @endforeach
+                      
+                      
+                    </select>
+                </div>
+                
+                <div class="form-group mt-3">
+                    <label for="feeAmount">Amount:</label>
+                    <input type="number" class="form-control" id="feeAmount" placeholder="Enter Fee Amount" style="display: none;">
+                </div>
+                <div class="form-group mt-3 text-right">
+    <button class="btn btn-success" id="submitFeeButton" style="display: none;">Make Payment</button>
+    <button class="btn btn-success" id="updateFeeButton" style="display:none;">Edit Payment</button>
+    <button class="btn btn-warning" id="resetFeeButton" style="display:none;" onclick="ResetExpense();">Reset</button>
+    <input type="text" id="expenseid" style="display:none;"/>
+</div>
+                <div class="suggestions" id="suggestions" style="display: none;"></div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped" id="student-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Expense Name</th>
+                            <th>ReceiptNo</th>
+                            <th>Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Content will be loaded here -->
+                    </tbody>
+                </table>
+                <div id="pagination-links">
+                    <!-- Pagination links will be loaded here -->
+                </div>
+            </div>
         </div>
+    </div><!-- /.container-fluid -->
+</div>
 
-        <table class="table table-bordered mt-4">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Admission No</th>
-                    <th>Name</th>
-                    <th>Course</th>
-                    <th>Batch</th>
-                    <th>Department</th>
-                </tr>
-            </thead>
-            <tbody id="resultsTable">
-                <!-- Rows will be populated here -->
-            </tbody>
-        </table>
-    </div>
+<!-- Load jQuery first -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<!-- Then load Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<!-- Load SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script>
-        const suggestions = [
-            { id: 1, admission_no: '12345', name: 'John Doe', course: 'Computer Science', batch: '2022', department: 'Engineering' },
-            { id: 2, admission_no: '12346', name: 'Jane Smith', course: 'Business', batch: '2022', department: 'Commerce' },
-            { id: 3, admission_no: '12347', name: 'Emily Johnson', course: 'Arts', batch: '2022', department: 'Humanities' },
-        ];
+<script>
+$(document).ready(function() {
+    // Initialize Select2
+    $('#admissionSearch').select2({
+        placeholder: 'Search Admission No',
+        ajax: {
+            url: '{{ route("students.admission.check") }}', // Update to your route
+            type: 'POST',
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+                return {
+                    query: params.term, // search term
+                    _token: '{{ csrf_token() }}' // Add CSRF token here
+                };
+            },
+            processResults: function(data) {
+                return {
+                    results: $.map(data, function(item) {
+                        return {
+                            text: item.text,
+                            id: item.id
+                        };
+                    })
+                };
+            },
+            cache: true
+        },
+        minimumInputLength: 1,
+        allowClear: true
+    });
 
-        $('#admissionSearch').on('input', function() {
-            const query = $(this).val().toLowerCase();
-            $('#suggestions').empty().hide();
-
-            if (query) {
-                const filteredSuggestions = suggestions.filter(s => s.admission_no.includes(query));
-                filteredSuggestions.forEach(s => {
-                    $('#suggestions').append(`<div class="suggestion-item" data-id="${s.id}">${s.admission_no} - ${s.name}</div>`);
-                });
-                $('#suggestions').show();
+    $('#searchButton').click(function() {
+        var admissionNo = $('#admissionSearch').val();
+       
+        // Perform your AJAX search here
+        $.ajax({
+            url: '{{ route("student.expenses.details")}}', // Update this URL to your search route
+            method: 'POST',
+            data: { admission_no: admissionNo, _token: '{{ csrf_token() }}'},
+            success: function(response) {
+                console.log(response);
+                loadExpenses();
+                $('#batchInfo').text(response.batch);
+                $('#name').text(response.name);
+                $('#course').text(response.course);
+                $('#department').text(response.department);
+                $('#coursefee').text(response.coursefee);
+                $('#dob').text(response.dob);
+                $('#tenuture').text(response.tenuture);
+                $('#paidinst').text(response.paidinst);
+                $('#TotalamtPaid').text(response.TotalamtPaid);
+                $('#balancefee').text(response.balancefee);
+                $('#donation').text(response.donation);
+                $('#infoBox').show();
+                $('#feeAmount').show(); // Show fee amount input
+                $('#expenseDropdown').show(); // Show dropdown
+                $('#submitFeeButton').show(); // Show submit button
             }
         });
+    });
 
-        $(document).on('click', '.suggestion-item', function() {
-            const id = $(this).data('id');
-            const selectedStudent = suggestions.find(s => s.id === id);
-            populateTable(selectedStudent);
-            $('#admissionSearch').val(selectedStudent.admission_no);
-            $('#suggestions').hide();
+    $('#resetButton').click(function() {
+        $('#admissionSearch').val(null).trigger('change'); // Clear the select box
+        $('#infoBox').hide(); // Hide the info box
+        $('#suggestions').hide(); // Hide the suggestions
+        $('#feeAmount').val(''); // Clear fee amount
+        $('#feeAmount').hide(); // Hide fee amount input
+        $('#expenseDropdown').hide(); // Hide dropdown
+        $('#submitFeeButton').hide(); // Hide submit button
+    });
+
+    $('#submitFeeButton').click(function() {
+        var feeAmount = $('#feeAmount').val();
+        var expenseId = $('#expenseSelect').val();
+        // Perform your AJAX submit here
+        $.ajax({
+            url: '{{ route("student.expenses.reciepts.save")}}', // Update this URL to your submit fee route
+            method: 'POST',
+            data: {
+                admission_no: $('#admissionSearch').val(),
+                amount: feeAmount,
+                expense_id: expenseId,
+                _token: '{{ csrf_token() }}' // Add CSRF token for security
+            },
+            success: function(response) {
+                loadExpenses();
+                $('#searchButton').click();
+                Swal.fire({
+                    title: response.msg,
+                    icon: "success"
+                });
+                // Reset fields or perform other actions
+            },
+            error: function(xhr) {
+                alert('An error occurred. Please try again.');
+            }
         });
+    });
+    $('#updateFeeButton').click(function() {
+           // Get values from the modal inputs
+           var feeAmount = $('#feeAmount').val();
+   var expenseId = $('#expenseSelect').val();
+   var id=$('#expenseid').val();
+  const url = '{{ route('student.expenses.reciepts.update', '') }}' + '/' + id;
 
-        function populateTable(student) {
-            $('#resultsTable').append(`
-                <tr>
-                    <td>${student.id}</td>
-                    <td>${student.admission_no}</td>
-                    <td>${student.name}</td>
-                    <td>${student.course}</td>
-                    <td>${student.batch}</td>
-                    <td>${student.department}</td>
-                </tr>
-            `);
-        }
-    </script>
-</body>
-</html>
+
+        // Send the AJAX request
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                amount: feeAmount,
+                expense_id: expenseId,
+               
+            },
+            success: function(response) {
+                // Handle success response
+                Swal.fire({
+                    title: response.msg,
+                    icon: "success"
+                });
+                loadExpenses();
+                ResetExpense();
+            },
+            error: function(xhr, status, error) {
+                // Handle error response
+                console.error('Error saving data', error);
+            }
+        });
+    
+    });
+});
+function editExpense(val)
+{
+    const id = val.getAttribute('data-id');
+    const expense_name = val.getAttribute('data-expense_name');
+    const amount = val.getAttribute('data-amount');
+    $('#expenseSelect').val(expense_name);
+    $('#feeAmount').val(amount);
+    $('#expenseid').val(id);
+    $('#submitFeeButton').hide();
+    $('#updateFeeButton').show();
+    $('#resetFeeButton').show();
+
+}
+function ResetExpense()
+{
+
+    $('#expenseSelect').val('');
+    $('#feeAmount').val('');
+    $('#expenseid').val('');
+    $('#submitFeeButton').show();
+    $('#updateFeeButton').hide();
+    $('#resetFeeButton').hide();
+
+}
+function loadExpenses()
+{
+    $.ajax({
+            url: '{{ route("student.expenses.reciepts")}}', // Update this URL to your search route
+            method: 'POST',
+            data: {  admission_no: $('#admissionSearch').val(), _token: '{{ csrf_token() }}'},
+            success: function(response) {
+                $('#student-table tbody').html(response.data);
+                // $('#pagination-links').html(response.links);
+            }
+        });
+ 
+}
+</script>
+
+<!-- /.content -->
+@endsection

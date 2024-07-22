@@ -120,12 +120,12 @@
                     </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a href="{{route('students.create')}}" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>New Student</p>
                             </a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <a href="{{route('students.index')}}" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
@@ -133,7 +133,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{route('students.expenses')}}" class="nav-link">
+                            <a href="{{route('student.expenses')}}" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Expenses & Fees</p>
                             </a>

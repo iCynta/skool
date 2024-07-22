@@ -466,20 +466,35 @@
             });
         }
 
-        loadTable();
+loadTable();
 
-        function loadTable(page = 1) {
-            $.ajax({
-                url: '{{ route("students.loadTable") }}',
-                data: { page: page },
-                success: function (response) {
-                    if (response.status === 200) {
-                        $('#student-table tbody').html(response.data);
-                        $('#pagination-links').html(response.links);
-                    }
-                }
-            });
+function loadTable(page = 1) {
+    let filters = {
+        id: $('#filter-id').val(),
+        admission_no: $('#filter-admission_no').val(),
+        name: $('#filter-name').val(),
+        course: $('#filter-course').val(),
+        batch: $('#filter-batch').val(),
+        department: $('#filter-department').val(),
+        seat_type: $('#filter-seat_type').val()
+    };
+
+    $.ajax({
+        url: '{{ route("students.loadTable") }}',
+        data: { page: page, filters: filters },
+        success: function(response) {
+            if (response.status === 200) {
+                $('#student-table tbody').html(response.data);
+                $('#pagination-links').html(response.links);
+            }
         }
+    });
+}
+
+// Filter input event listener
+$('input[id^="filter-"]').on('keyup', function() {
+    loadTable();
+});
 
         $(document).on('click', '#pagination-links a', function (e) {
             e.preventDefault();
