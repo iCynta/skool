@@ -30,7 +30,7 @@ class EmployeeExpenseController extends Controller
         }
 
         // Retrieve filtered expenses
-        $expenses = $query->paginate(10);
+        $expenses = $query->orderBy('id','desc')->paginate(10);
 
         // Return view with filtered expenses
         return view('employee_expenses.index', compact('expenses', 'employees'));
@@ -49,7 +49,8 @@ class EmployeeExpenseController extends Controller
         $validatedData = $request->validate([
             'employee_id' => 'required|exists:users,id',
             'expense_id' => 'required|exists:employee_expense_masters,id',
-            'amount' => 'required|numeric|min:0|max:999999.99'
+            'amount' => 'required|numeric|min:0|max:999999.99',
+            'description' => 'nullable|string',
             //'voucher_no' => 'required|string|max:20|unique:employee_expenses,voucher_no',
             ///'created_by' => 'required|exists:users,id',
             // 'settled' => 'required|boolean',
@@ -60,6 +61,7 @@ class EmployeeExpenseController extends Controller
             $expense->employee_id = $validatedData['employee_id'];
             $expense->expense_id = $validatedData['expense_id'];
             $expense->voucher_no = rand(100000, 999999) . now()->format('YmdHis');
+            $expense->description = $validatedData['description'];
             $expense->created_by = auth()->id();
             $expense->amount = $validatedData['amount'];
             $expense->settled = 0;
@@ -102,6 +104,7 @@ class EmployeeExpenseController extends Controller
             'expense_id' => 'required|exists:employee_expense_masters,id',
             'voucher_no' => 'required|string|max:20|unique:employee_expenses,voucher_no,' . $id,
             'created_by' => 'required|exists:users,id',
+            'description' => 'nullable|string',
             'settled' => 'required|boolean',
         ]);
 
@@ -109,6 +112,7 @@ class EmployeeExpenseController extends Controller
         $expense->employee_id = $validatedData['employee_id'];
         $expense->expense_id = $validatedData['expense_id'];
         $expense->voucher_no = $validatedData['voucher_no'];
+        $expense->description = $validatedData['description'];
         $expense->created_by = $validatedData['created_by'];
         $expense->settled = $validatedData['settled'];
         $expense->save();

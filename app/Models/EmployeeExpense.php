@@ -14,6 +14,7 @@ class EmployeeExpense extends Model
         'employee_id',
         'expense_id',
         'voucher_no',
+        'description',
         'created_by',
         'settled',
     ];

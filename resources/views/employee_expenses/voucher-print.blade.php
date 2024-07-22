@@ -91,6 +91,7 @@
                 <p><b>Paid To: Mr/Mrs/Ms,  </b><i>{{ $expense->employee->name}}</i> </p>
                 <p><b>Voucher Type:  </b><i>{{ $expense->expenseMaster->name}}</i> </p>
                 <p><b> Amount: </b> <i> {{ $expense->amount}}</i>/-</p>
+                <p><b>Description:</b> <i>{{ e($expense->description ?? 'NA') }}</i></p>
             </div>
             <div class="voucher_footer">
                 <p class="text-left text-sm text-muted" style="width:49%">Authorized By : ...............................</p>

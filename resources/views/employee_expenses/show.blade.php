@@ -60,12 +60,20 @@
                                     <td>Expense Type</td> <td>{{ $expense->expenseMaster->name}}</td>
                                 </tr>
                                 <tr>
-                                    <td>Amount</td> <td>{{ $expense->amount}}</td>
+                                    <td>Amount</td> <td>{{ $expense->amount}} /-</td>
+                                </tr>
+                                <tr>
+                                    <td>Description</td> <td>{{ $expense->description}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Created By:</td> <td>{{$expense->createdBy->name}}</td>
                                 </tr>
                             </tbody>
-                            <tfoot>
+                            <tfoot class="bg-dark">
                                 <tr>
-                                    <th colspan="2"><p class="text-right text-sm text-muted">Created By: {{$expense->createdBy->name}}</p></th>
+                                    <th colspan="2">
+                                        <a href="{{route('expenses.index')}}" class="btn btn-sm btn-secondary float-right">Back</a>
+                                    </th>
                                 </tr>
                             </tfoot>
                         </table>
