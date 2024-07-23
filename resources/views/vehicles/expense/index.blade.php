@@ -96,7 +96,7 @@
                         <td>{{ $expense->expenseType->name ?? '-' }}</td>
                         <td>{{ $expense->created_at }}</td>
                         <td>
-                            <a href="{{route('vehicles.show',['vehicle'=>$expense->vehicle_id])}}" class="btn btn-sm btn-primary">View</a>
+                            <a href="{{route('vehicle.expense.view',['expense_id'=>$expense->id])}}" class="btn btn-sm btn-primary">View</a>
                             <a href="#" class="btn btn-sm btn-danger">Delete</a>
                         </td>
                     </tr>

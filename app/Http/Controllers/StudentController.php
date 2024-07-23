@@ -104,23 +104,23 @@ class StudentController extends Controller
         $managementUsers = User::whereHas('role', function ($query) {
             $query->where('name', 'Management');
         })->get();
-    
+
         $courses = Course::all();
         $batches = Batch::all();
         $departments = Department::all();
         $seatTypes = SeatType::all();
         $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(10);
- 
-    
+
+
         return view('students.index', compact('students', 'managementUsers', 'courses', 'batches', 'departments', 'seatTypes'));
     }
     public function loadTable(Request $request)
     {
         // Adjust the pagination size as needed
-        $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(10);
-    
+        $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(100);
+
         $disp = ''; // Initialize $disp to avoid undefined variable notice
-    
+
         foreach ($students as $student) {
             $disp .= '<tr>';
             $disp .= '<td>' . $student->id . '</td>';
@@ -140,22 +140,22 @@ class StudentController extends Controller
             $disp .= '</td>';
             $disp .= '</tr>';
         }
-    
+
         // Generate pagination links using Bootstrap 4 styling
         $paginate = $students->links('vendor.pagination.bootstrap-4')->toHtml();
-    
+
         $response = [
             'status' => 200,
             'data' => $disp,
             'links' => $paginate
         ];
-    
+
         // Return JSON response
-    
+
         return response()->json($response);
     }
-    
-    
+
+
     public function create()
     {
         $managementUsers = User::whereHas('role', function ($query) {
@@ -167,57 +167,48 @@ class StudentController extends Controller
         $seatTypes = SeatType::all();
         return view('students.create', compact('managementUsers', 'courses', 'batches', 'departments', 'seatTypes'));
     }
-  
-public function checkBatchSeatStatus(Request $request)
-{
-    $seatid=$request->seatid;
-    $batchid=$request->batchId;
-    $course_id=$request->course_id;
 
-    $noOfStudents = Student::where('seat_type', $seatid)
-    ->where('course_id', $course_id)
-    ->where('batch_id', $batchid)
-    ->count();
-    $seatTypes = SeatType::where('id',$seatid)->first();
-    $batches = Batch::where('id',$batchid)->first();
-    $status='';
-    $msg='';
-    $totalseat='';
-    if($seatid==1)
+    public function checkBatchSeatStatus(Request $request)
     {
-        $totalseat=$batches->merit_seat;
-        if($noOfStudents==$totalseat)
-        {
-            $status='NotAvailable';
-            $msg='Seat not Available ('.$noOfStudents.'/'.$totalseat.')';
-        }
-        else
-        {
-            $status='Available';
-            $msg='::Available seats:'.$totalseat;
-        }
-    }
-    else if($seatid==2)
-    {
-        $totalseat=$batches->payment_seat;
-        if($noOfStudents==$totalseat)
-        {
-            $status='NotAvailable';
-            $msg='Seat not Available ('.$noOfStudents.'/'.$totalseat.')';
-        }
-        else
-        {
-            $status='Available';
-            $msg='::Available seats:'.$totalseat;
-        }
-    }
-    $response = [
-        'status' => $status,
-        'msg' => $msg
-    ];
+        $seatid = $request->seatid;
+        $batchid = $request->batchId;
+        $course_id = $request->course_id;
 
-    // Return JSON response
-    return response()->json($response);
+        $noOfStudents = Student::where('seat_type', $seatid)
+            ->where('course_id', $course_id)
+            ->where('batch_id', $batchid)
+            ->count();
+        $seatTypes = SeatType::where('id', $seatid)->first();
+        $batches = Batch::where('id', $batchid)->first();
+        $status = '';
+        $msg = '';
+        $totalseat = '';
+        if ($seatid == 1) {
+            $totalseat = $batches->merit_seat;
+            if ($noOfStudents == $totalseat) {
+                $status = 'NotAvailable';
+                $msg = 'Seat not Available (' . $noOfStudents . '/' . $totalseat . ')';
+            } else {
+                $status = 'Available';
+                $msg = '::Available seats:' . $totalseat;
+            }
+        } else if ($seatid == 2) {
+            $totalseat = $batches->payment_seat;
+            if ($noOfStudents == $totalseat) {
+                $status = 'NotAvailable';
+                $msg = 'Seat not Available (' . $noOfStudents . '/' . $totalseat . ')';
+            } else {
+                $status = 'Available';
+                $msg = '::Available seats:' . $totalseat;
+            }
+        }
+        $response = [
+            'status' => $status,
+            'msg' => $msg
+        ];
+
+        // Return JSON response
+        return response()->json($response);
 
 
 }
@@ -253,7 +244,7 @@ public function searchAdmissions(Request $request)
             'status' => 200,
             'msg' => 'Student created successfully.'
         ];
-    
+
         // Return JSON response
         return response()->json($response);
         // return redirect()->route('students.index')->with('success', 'Student created successfully.');
@@ -284,7 +275,7 @@ public function searchAdmissions(Request $request)
             'batch_id' => 'required|exists:batches,id',
             'department_id' => 'required|exists:departments,id',
             'gender' => 'required|string|max:255',
-            
+
         ]);
 
         $student->update($request->all());
@@ -292,7 +283,7 @@ public function searchAdmissions(Request $request)
             'status' => 200,
             'msg' => 'Student Updated successfully.'
         ];
-    
+
         // Return JSON response
         return response()->json($response);
     }

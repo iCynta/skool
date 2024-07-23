@@ -10,6 +10,9 @@ use App\Http\Controllers\RecieptController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\EmployeeExpenseMasterController;
+use App\Http\Controllers\EmployeeExpenseController;
+
 use App\Http\Controllers\StudentsExpenseMaster;
 use App\Http\Controllers\StudentsExpenseController;
 
@@ -108,26 +111,23 @@ Route::get('/reciepts/{id}', [RecieptController::class, 'view'])->name('reciepts
         Route::resource('vehicles', VehicleController::class); // Will create all the routes
         
         Route::get('/vehicles/expense/new', [VehicleController::class, 'CreateExpense'])->name('vehicle.expense.new');
-        // Route::post('/vehicles/expense/add', [VehicleController::class, 'AddVehicleExpense'])->name('vehicle.expense.add');
+        Route::post('/vehicles/expense/add', [VehicleController::class, 'AddVehicleExpense'])->name('vehicle.expense.store');
         Route::get('/vehicles/expense/index', [VehicleController::class, 'VehicleExpenses'])->name('vehicle.expense.index');
     });
 
+<<<<<<<<< Temporary merge branch 1
     // Employee Expenses
-        //Vehicle Expenses
-        Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
-            Route::resource('employee/expenses', EmployeeExpenseController::class);
-        });
+    Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () { 
+        Route::resource('employee/expenses', EmployeeExpenseController::class);
+        //Print Voucher
+        Route::get('expense/voucher/print/{voucher}', [EmployeeExpenseController::class, 'printExpenseVoucher'])->name('print.expense.voucher');
+
+    });    
 
     
 
-    // Employee Expenses
-        //Vehicle Expenses
-        Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
-            Route::resource('employee/expenses', EmployeeExpenseController::class);
-        });
-
     
-
+=========
        // Settings
        Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
         Route::get('/settings/expense/master', function () {
@@ -138,5 +138,6 @@ Route::get('/reciepts/{id}', [RecieptController::class, 'view'])->name('reciepts
         Route::post('/settings/expense/master/entry/{id?}', [StudentsExpenseMaster::class, 'save'])->name('settings.expense.master.entry');
 
         });
+>>>>>>>>> Temporary merge branch 2
 
 });

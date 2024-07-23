@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('expense_name', 100); // VARCHAR 100
             $table->dateTime('created_at'); // DateTime
             $table->integer('status')->default(0); // Integer with default value 0
+            $table->softDeletes();
         });
     }
 

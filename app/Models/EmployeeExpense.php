@@ -14,9 +14,11 @@ class EmployeeExpense extends Model
         'employee_id',
         'expense_id',
         'voucher_no',
+        'description',
         'created_by',
         'settled',
     ];
+    protected $table= "employee_expenses";
 
     public function employee()
     {
@@ -26,5 +28,10 @@ class EmployeeExpense extends Model
     public function expenseMaster()
     {
         return $this->belongsTo(EmployeeExpenseMaster::class, 'expense_id');
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

@@ -7,7 +7,7 @@
         </div>
         <!-- /.card-header -->
         <!-- form start -->
-        <form role="form" method="POST" action="{{ route('employee-expenses.update', $employeeExpense->id) }}">
+        <form role="form" method="POST" action="{{ route('employee.expenses.update', $employeeExpense->id) }}">
             @csrf
             @method('PUT')
 
@@ -69,7 +69,7 @@
 
             <div class="card-footer">
                 <button type="submit" class="btn btn-primary">Update</button>
-                <a href="{{ route('employee-expenses.index') }}" class="btn btn-default">Cancel</a>
+                <a href="{{ route('employee.expenses.index') }}" class="btn btn-default">Cancel</a>
             </div>
         </form>
     </div>

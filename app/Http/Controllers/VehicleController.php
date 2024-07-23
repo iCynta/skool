@@ -8,6 +8,7 @@ use App\Models\VehicleExpenseMaster;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use PDF;
 
 class VehicleController extends Controller
 {
@@ -147,12 +148,13 @@ class VehicleController extends Controller
         {
             $expense = $request->all();
             $expense['created_by'] = Auth()->user()->id;
-            VehicleExpense::create($expense);
+            $expense = VehicleExpense::create($expense);
            // return redirect()->route('vehicles.show',['vehicle'=>$request->vehicle_id])->with('success','Expense successfully added');
            $fleets = Vehicle::all();
            $expenseTypes = VehicleExpenseMaster::all();
            $expenses = VehicleExpense::with('vehicle', 'expenseType')->orderBy('id','DESC')->paginate(10);
-           return view('vehicles.expense.index', compact('fleets', 'expenseTypes', 'expenses'));
+           //return view('vehicles.expense.index', compact('fleets', 'expenseTypes', 'expenses'));
+           return redirect()->route('vehicle.expense.view',['expense_id'=>$expense->id]);
         } catch (ModelNotFoundException $e)
         {
             return redirect()->back()->with('error', 'Expense can not record');
@@ -185,6 +187,27 @@ class VehicleController extends Controller
         $expenses = $query->orderBy('id', 'DESC')->with('vehicle', 'expenseType')->paginate(10);
         //dd($expenses);
         return view('vehicles.expense.index', compact('fleets', 'expenseTypes', 'expenses'));
+    }
+
+    public function viewExpense($expense_id)
+    {
+        $expense = VehicleExpense::with('vehicle', 'expenseType')->find($expense_id);
+        return view('vehicles.expense.view', compact('expense'));
+    }
+
+    public function viewExpenseVoucher($expense_id)
+    {
+        $expense = VehicleExpense::with('vehicle', 'expenseType')->find($expense_id);
+        if($expense)
+        {
+            $pdf = PDF::loadView('vehicles.expense.voucher_print', compact('expense'));
+            return $pdf->stream('Vehicle Voucher-'.$expense->vehicle->plate_number.'.pdf');
+        }
+        else
+        {
+            return redirect()->back()->with('error', 'Voucher cannot found.');
+        }
+
     }
     
     
