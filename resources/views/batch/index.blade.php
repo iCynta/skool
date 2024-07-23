@@ -28,7 +28,7 @@
 <div class="content">
     <div class="container-fluid">
     
-    <div class="row">
+    <div class="row ">
         <div class="container mt-2 pb-2">
             <div class="row justify-content-center">
                 <div class="col-md-8">
@@ -45,9 +45,12 @@
             </div>            
         </div>
     </div>
-    <div class="table-responsive">
-        {!! $dataTable->table(['class' => 'table table-bordered']) !!}
+    <div class="card">
+        <div class="table-responsive">
+            {!! $dataTable->table(['class' => 'table table-bordered']) !!}
+        </div>
     </div>
+
     
     </div><!-- /.container-fluid -->
 </div>
