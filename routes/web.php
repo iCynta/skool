@@ -87,7 +87,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/student/expenses/reciepts', [StudentsExpenseController::class, 'loadExpenseReciepts'])->name('student.expenses.reciepts');
         Route::post('/student/expenses/reciepts/save', [StudentsExpenseController::class, 'store'])->name('student.expenses.reciepts.save');
         // routes/web.php
-Route::post('/student/expenses/receipts/update/{id}', [StudentsExpenseController::class, 'update'])->name('student.expenses.reciepts.update');
+          Route::post('/student/expenses/receipts/update/{id}', [StudentsExpenseController::class, 'update'])->name('student.expenses.reciepts.update');
 
         // Route::post('/students/expenses', [StudentController::class, 'expensesDetails'])->name('students.expenses');
         Route::resource('students', StudentController::class)->except(['show']);
@@ -111,6 +111,22 @@ Route::get('/reciepts/{id}', [RecieptController::class, 'view'])->name('reciepts
         // Route::post('/vehicles/expense/add', [VehicleController::class, 'AddVehicleExpense'])->name('vehicle.expense.add');
         Route::get('/vehicles/expense/index', [VehicleController::class, 'VehicleExpenses'])->name('vehicle.expense.index');
     });
+
+    // Employee Expenses
+        //Vehicle Expenses
+        Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
+            Route::resource('employee/expenses', EmployeeExpenseController::class);
+        });
+
+    
+
+    // Employee Expenses
+        //Vehicle Expenses
+        Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
+            Route::resource('employee/expenses', EmployeeExpenseController::class);
+        });
+
+    
 
        // Settings
        Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
