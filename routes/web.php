@@ -113,6 +113,8 @@ Route::get('/reciepts/{id}', [RecieptController::class, 'view'])->name('reciepts
         Route::get('/vehicles/expense/new', [VehicleController::class, 'CreateExpense'])->name('vehicle.expense.new');
         Route::post('/vehicles/expense/add', [VehicleController::class, 'AddVehicleExpense'])->name('vehicle.expense.store');
         Route::get('/vehicles/expense/index', [VehicleController::class, 'VehicleExpenses'])->name('vehicle.expense.index');
+        Route::get('/vehicles/expense/view/{expense_id}', [VehicleController::class, 'viewExpense'])->name('vehicle.expense.view');
+        Route::get('/vehicles/expense/voucher/{expense_id}', [VehicleController::class, 'viewExpenseVoucher'])->name('vehicle.expense.voucher');
     });
 
     // Employee Expense Masters
