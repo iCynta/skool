@@ -41,7 +41,7 @@
                 </div>
                 <!-- /.card-header -->
                 <!-- form start -->
-                <form action="{{route('vehicle.expense.add')}}" method="post">
+                <form action="{{route('vehicle.expense.store')}}" method="post">
                     @csrf
                     <div class="card-body">
                         <div class="row">
