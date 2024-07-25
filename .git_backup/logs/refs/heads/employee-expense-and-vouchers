@@ -1,0 +1,15 @@
+0000000000000000000000000000000000000000 825d3ed700b463f3f5f6dbf3aa97fc94e9867000 Arun Raj G S <rpv19852000@gmail.com> 1720798293 +0530	branch: Created from HEAD
+825d3ed700b463f3f5f6dbf3aa97fc94e9867000 74c57c8a6357ba219fa84032747067074fa19537 Arun Raj G S <rpv19852000@gmail.com> 1720807366 +0530	commit: Employee Expense Master and Employee Expense Module in progress
+74c57c8a6357ba219fa84032747067074fa19537 1322358260e0c5b7299e47c537ab18908642091d Arun Raj G S <rpv19852000@gmail.com> 1721056620 +0530	commit: Minor fix
+1322358260e0c5b7299e47c537ab18908642091d 05616922fbd241f3d65612bf849897d8db589940 Arun Raj G S <rpv19852000@gmail.com> 1721143785 +0530	commit: Expense Management on progress
+05616922fbd241f3d65612bf849897d8db589940 3c93c5cabc469235badf8e93d4698fb11520dfd0 Arun Raj G S <rpv19852000@gmail.com> 1721145355 +0530	commit (merge): Merge remote-tracking branch 'origin/demo' into employee-expense-and-vouchers
+3c93c5cabc469235badf8e93d4698fb11520dfd0 7c42cccb05c57b3206a41e56517315cd16be891b Arun Raj G S <rpv19852000@gmail.com> 1721146633 +0530	commit: merge and conflict solved with demo
+7c42cccb05c57b3206a41e56517315cd16be891b fa5cd2078da8e183feab65dedf872b1d71bbaa4b Arun Raj G S <rpv19852000@gmail.com> 1721152548 +0530	commit: Expense under progress
+fa5cd2078da8e183feab65dedf872b1d71bbaa4b 62d18d27d1cf616c317ace341e58cd723f7f6525 Arun Raj G S <rpv19852000@gmail.com> 1721242435 +0530	commit: Voucher print.
+62d18d27d1cf616c317ace341e58cd723f7f6525 378dba17a8b7bf5180d38cc96233b8fb78aec46e Arun Raj G S <rpv19852000@gmail.com> 1721661017 +0530	commit: Added description field to employee expenses and voucher print.
+378dba17a8b7bf5180d38cc96233b8fb78aec46e c054ccba5c56b1834ac7ede8005d0ca70f6f3399 Arun Raj G S <rpv19852000@gmail.com> 1721662636 +0530	commit (merge): Merge branch 'demo' into employee-expense-and-vouchers
+c054ccba5c56b1834ac7ede8005d0ca70f6f3399 8665c27ffc807bb571d8d2c34a9481699a247199 Arun Raj G S <rpv19852000@gmail.com> 1721665077 +0530	commit: Correct migration and seeder
+8665c27ffc807bb571d8d2c34a9481699a247199 5c1d8e7bfff0a9e69de9113e9928d358a16bedf3 Arun Raj G S <rpv19852000@gmail.com> 1721665189 +0530	commit: all merged
+5c1d8e7bfff0a9e69de9113e9928d358a16bedf3 334634f27621529f65d0fa371fd6e8c1ee994059 Arun Raj G S <rpv19852000@gmail.com> 1721749724 +0530	commit: Solved the issue of vehicle expense create
+334634f27621529f65d0fa371fd6e8c1ee994059 864dd3d8f5c23f7c764debf72629c4ad4a7b7100 Arun Raj G S <rpv19852000@gmail.com> 1721754244 +0530	commit: Vehicle expense voucher print
+864dd3d8f5c23f7c764debf72629c4ad4a7b7100 970f03b3ce1f32113ddb00d4fc01ccc03a53b36c Arun Raj G S <rpv19852000@gmail.com> 1721754616 +0530	commit: Vehicle expense voucher alignment correction

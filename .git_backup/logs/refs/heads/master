@@ -1,0 +1,12 @@
+0000000000000000000000000000000000000000 02c0b1361243dd40b13167bcf1f0ce81c952ad9a Arun Raj G S <rpv19852000@gmail.com> 1716526903 +0530	commit (initial): Initial Commit
+02c0b1361243dd40b13167bcf1f0ce81c952ad9a f96228caa4795ad15d5c0c80c8aa7b22febebf99 Arun Raj G S <rpv19852000@gmail.com> 1716858353 +0530	commit: Masters without edit/Delete and Permissions are done
+f96228caa4795ad15d5c0c80c8aa7b22febebf99 30b624ae46fc71ee4a36be9f4d81c9f7405b1598 Arun Raj G S <rpv19852000@gmail.com> 1716967489 +0530	commit: Role based authentication implemented
+30b624ae46fc71ee4a36be9f4d81c9f7405b1598 7b38b9c873b53458552dd2c9de677b7c08be81f6 Arun Raj G S <rpv19852000@gmail.com> 1719128646 +0530	commit: Stable before uploading to camcut server
+7b38b9c873b53458552dd2c9de677b7c08be81f6 7a3da2662c1012a6dbba330818ee104e485ab852 Arun Raj G S <rpv19852000@gmail.com> 1719152774 +0530	commit: Student form added with address n gender field, Migration and seeder added for seat type.
+7a3da2662c1012a6dbba330818ee104e485ab852 ccb560766fe11179126aedc4d2ad6ebcef1ba202 Arun Raj G S <rpv19852000@gmail.com> 1719154111 +0530	commit (merge): Merge remote-tracking branch 'origin/master' into master
+ccb560766fe11179126aedc4d2ad6ebcef1ba202 b3b17c6d9acfd0cda768b513df1ee9ff23339a3e Arun Raj G S <rpv19852000@gmail.com> 1719938368 +0530	merge vehicle-management: Fast-forward
+b3b17c6d9acfd0cda768b513df1ee9ff23339a3e 825d3ed700b463f3f5f6dbf3aa97fc94e9867000 Arun Raj G S <rpv19852000@gmail.com> 1720798075 +0530	pull origin master: Fast-forward
+825d3ed700b463f3f5f6dbf3aa97fc94e9867000 970f03b3ce1f32113ddb00d4fc01ccc03a53b36c Arun Raj G S <rpv19852000@gmail.com> 1721755269 +0530	pull --tags origin employee-expense-and-vouchers: Fast-forward
+970f03b3ce1f32113ddb00d4fc01ccc03a53b36c bc86347f22ee0e7ad0b4116e10a3e340079f9284 Arun Raj G S <rpv19852000@gmail.com> 1721755328 +0530	commit: pull from voucher branch
+bc86347f22ee0e7ad0b4116e10a3e340079f9284 1fe3180c3393f75670333eea810bb24c66f029ca Arun Raj G S <rpv19852000@gmail.com> 1721756943 +0530	commit: added "updated_at" students_expense_master migration
+1fe3180c3393f75670333eea810bb24c66f029ca d1f13d1f7b3691530fac8ca6e1819f127e0a89eb Arun Raj G S <rpv19852000@gmail.com> 1721759987 +0530	commit: Students expense design change in progress.
