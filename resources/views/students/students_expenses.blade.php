@@ -11,20 +11,11 @@
         /* Adjust the value as needed */
     }
 
-    .info-box {
-        margin-top: 20px;
-        padding: 15px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-    }
 
-    .info-box p {
-        margin: 0;
-        /* Remove default margin */
-    }
+
+
 </style>
-<div class="content-header">
+<div class="content-header card">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
@@ -43,10 +34,10 @@
 <!-- /.content-header -->
 
 <!-- Main content -->
-<div class="content">
+<div class="content card">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-6 float-left">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-light"> Search Admission No</div>
                     <div class="card-body">
@@ -62,17 +53,49 @@
                     <div class="card-footer bg-light"></div>
                 </div>
             </div>
-            <div class="col-md-6 float-left" id="infoBox" style="display: none;">
+            <div class="col-md-6" id="expenseDropdown" style="display: none;">
+                <div class="card">
+                    <div class="card-header bg-light">Make Payment</div>
+                    <div class="card-body">
+                        <div class="form-group mt-3">
+
+                            <label for="expenseSelect">Select Expense:</label>
+
+                            <select class="form-control" id="expenseSelect">
+                                <option value="">Select an expense</option>
+
+                                @foreach ($expenses as $exprow)
+                                    <option value="{{$exprow['id']}}">{{$exprow['expense_name']}}</option>
+                                @endforeach
+                            </select>
+
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="feeAmount">Amount:</label>
+                            <input type="number" class="form-control" id="feeAmount" placeholder="Enter Fee Amount"
+                                style="display: none;">
+                        </div>
+                        <div class="form-group mt-3 text-right">
+                            <button class="btn btn-success" id="submitFeeButton" style="display: none;">Make
+                                Payment</button>
+                            <button class="btn btn-success" id="updateFeeButton" style="display:none;">Edit
+                                Payment</button>
+                            <button class="btn btn-warning" id="resetFeeButton" style="display:none;"
+                                onclick="ResetExpense();">Reset</button>
+                            <input type="text" id="expenseid" style="display:none;" />
+                        </div>
+                        <div class="suggestions" id="suggestions" style="display: none;"></div>
+                    </div>
+                    <div class="card-footer">Footer</div>
+
+                </div>
+            </div>
+            <div class="col-md-6" id="infoBox" style="display: none;">
                 <div class="card">
                     <div class="card-header bg-light">Student Detail</div>
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-sm table-striped">
-                                <!-- <thead>
-                                        <tr>
-                                            <th colspan="2"></th>
-                                        </tr>
-                                    </thead> -->
                                 <tbody>
                                     <tr>
                                         <td>Name</td>
@@ -128,43 +151,7 @@
                         </div> -->
                 </div>
             </div>
-            <div class="col-md-6 float-left" id="expenseDropdown" style="display: none;">
-                <div class="card">
-                    <div class="card-header bg-light">Make Payment</div>
-                    <div class="card-body">
-                        <div class="form-group mt-3">
 
-                            <label for="expenseSelect">Select Expense:</label>
-
-                            <select class="form-control" id="expenseSelect">
-                                <option value="">Select an expense</option>
-
-                                @foreach ($expenses as $exprow)
-                                    <option value="{{$exprow['id']}}">{{$exprow['expense_name']}}</option>
-                                @endforeach
-                            </select>
-
-                        </div>
-                        <div class="form-group mt-3">
-                            <label for="feeAmount">Amount:</label>
-                            <input type="number" class="form-control" id="feeAmount" placeholder="Enter Fee Amount"
-                                style="display: none;">
-                        </div>
-                        <div class="form-group mt-3 text-right">
-                            <button class="btn btn-success" id="submitFeeButton" style="display: none;">Make
-                                Payment</button>
-                            <button class="btn btn-success" id="updateFeeButton" style="display:none;">Edit
-                                Payment</button>
-                            <button class="btn btn-warning" id="resetFeeButton" style="display:none;"
-                                onclick="ResetExpense();">Reset</button>
-                            <input type="text" id="expenseid" style="display:none;" />
-                        </div>
-                        <div class="suggestions" id="suggestions" style="display: none;"></div>
-                    </div>
-                    <div class="card-footer">Footer</div>
-
-                </div>
-            </div>
         </div>
 
         <div class="col-md-12">

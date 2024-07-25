@@ -1,4 +1,4 @@
-<table class="table table-md-table-striped table-bordered mt-3">
+<table class="table table-sm table-striped  mt-3">
         <thead class="bag-dark">
             <tr>
                 <th>Si No:</th>
@@ -22,11 +22,11 @@
                     <td>{{ $student->department->name }}</td>
                     <td>{{ $student->seat_type }}</td>  
                     <td>
-                        <a href="{{ route('students.edit', $student) }}" class="btn btn-warning">Edit</a>
+                        <a href="{{ route('students.edit', $student) }}" class=" btn btn-sm btn-warning">Edit</a> &nbsp;
                         <form action="{{ route('students.destroy', $student) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
                         </form>
                     </td>
                 </tr>

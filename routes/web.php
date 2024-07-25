@@ -141,4 +141,7 @@ Route::get('/reciepts/{id}', [RecieptController::class, 'view'])->name('reciepts
 
     });
 
+    
+
+
 });

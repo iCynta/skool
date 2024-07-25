@@ -5,11 +5,11 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<div class="content-header">
+<div class="content-header card">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Departments</h1>
+                <h1 class="m-0">Employees</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -25,7 +25,7 @@
 <!-- /.content-header -->
 
 <!-- Main content -->
-<div class="content">
+<div class="content card">
     <div class="container-fluid">
     
     <div class="row">
@@ -46,7 +46,7 @@
         </div>
     </div>
     <div class="table-responsive">
-        <table class="table table-md table-striped table-light">
+        <table class="table table-sm table-striped table-light">
             <thead class="bg-dark">
                 <tr>
                 <th>Si No:</th> <th>Name</th> <th>Designation</th><th>Role</th><th>Course</th><th> Action</th>
@@ -61,9 +61,9 @@
                         <td>{{$user->role->name}}</td>
                         <td>{{$user->course->name}}</td>
                         <td>
-                            <a href="#" class="btn btn-md btn-primary">View</a>
-                            <a href="{{route('user.edit',['id'=>$user->id])}}" class="btn btn-md btn-warning">Edit</a>
-                            <a href="#" class="btn btn-md btn-danger">Delete</a>
+                            <a href="#" class="btn btn-sm btn-primary">View</a>
+                            <a href="{{route('user.edit',['id'=>$user->id])}}" class="btn btn-sm btn-warning">Edit</a>
+                            <a href="#" class="btn btn-sm btn-danger">Delete</a>
                         </td>
                     </tr>
                 @empty

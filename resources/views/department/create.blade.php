@@ -5,7 +5,7 @@
 @section('title', 'Dashboard:Department')
 
 @section('content')
-<div class="content-header">
+<div class="content-header card">
     <div class="container-fluid">
         <div class="row mb-2">
             

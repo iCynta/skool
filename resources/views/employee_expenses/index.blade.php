@@ -3,7 +3,7 @@
 @section('title', 'Employee Expenses')
 
 @section('content')
-<div class="content-header">
+<div class="content-header card">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
@@ -21,7 +21,7 @@
 <!-- /.content-header -->
 
 <!-- Main content -->
-<div class="content card">
+<div class="content">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">

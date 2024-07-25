@@ -3,11 +3,11 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<div class="content-header">
+<div class="content-header card">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Registered Schools</h1>
+                <h1 class="m-0">Role and Permissions</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -23,7 +23,7 @@
 <!-- /.content-header -->
 
 <!-- Main content -->
-<div class="content">
+<div class="content card">
     <div class="container-fluid">
         <div class="row">
             <div class="container mt-2 pb-2">
@@ -44,7 +44,6 @@
         </div>
 
         <div class="container">
-            <h1>Manage Roles and Permissions</h1>
             
             @foreach($roles as $role)
                 <form action="{{ route('roles-permissions.update') }}" method="POST">

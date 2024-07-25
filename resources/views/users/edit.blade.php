@@ -4,7 +4,7 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<div class="content-header">
+<div class="content-header card">
     <div class="container-fluid">
         <div class="row mb-2">
             
@@ -22,7 +22,7 @@
 <!-- /.content-header -->
 
 <!-- Main content -->
-<div class="content">
+<div class="content card">
     <div class="container-fluid">
         <div class="container">
         <div class="card card-secondary">

@@ -9,7 +9,7 @@
         /* Adjust the value as needed */
     }
 </style>
-<div class="content-header">
+<div class="content-header card">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
@@ -28,7 +28,7 @@
 <!-- /.content-header -->
 
 <!-- Main content -->
-<div class="content">
+<div class="content card">
     <div class="container-fluid">
 
         <div class="row">
@@ -46,9 +46,9 @@
                     </div>
                 </div>
             </div>
-            <div class=" card table-responsive">
+            <div class=" table-responsive">
                 <div class="card-body">
-                    <table class="table table-striped" id="student-table">
+                    <table class="table table-sm table-striped" id="student-table">
                         <thead>
                             <tr>
                                 <th colspan="8"><a class="btn btn-lg btn-success mr-2 float-right" onclick="openModal(0)">Add</a></th>
@@ -259,10 +259,10 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="saveForm();" id="submit_student"
+                            <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-sm btn-primary" onclick="saveForm();" id="submit_student"
                                 style="display:none;">Save changes</button>
-                            <button type="button" class="btn btn-primary" onclick="updateForm();" id="update_student"
+                            <button type="button" class="btn btn-sm btn-primary" onclick="updateForm();" id="update_student"
                                 style="display:none;">Update changes</button>
                         </div>
 
