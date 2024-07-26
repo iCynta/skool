@@ -15,6 +15,7 @@ use App\Http\Controllers\EmployeeExpenseController;
 
 use App\Http\Controllers\StudentsExpenseMaster;
 use App\Http\Controllers\StudentsExpenseController;
+use App\Models\School;
 
 Route::get('/', function () {
     return view('auth/login');
@@ -28,6 +29,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(['middleware' => 'auth'], function () {
 
+    $school = School::first();
+    session(['school' => $school]); // Store school detail in session
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
