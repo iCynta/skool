@@ -114,43 +114,52 @@
                                 </div>
                             </td>
                             <td>
-                            <button type="submit" class="btn btn-dark btn-sm">
+                                <button type="submit" class="btn btn-dark btn-sm">
                                     <i class="fa fa-search"></i> Filter
                                 </button>
-                               
-                                <button type="button" class="btn btn-dark btn-sm">
-                                    <i class="fa fa-file-export"></i> Export
-                                </button>
+                                <a href="{{ route('export.students', request()->query()) }}" class="btn btn-dark btn-sm">
+    <i class="fa fa-file-export"></i> Export
+</a>
                             </td>
                             </form>
-                        <td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                             
-                            </td>
+                        <td></td>
                     </tr>
                 </thead>
                 <tbody>
                 @php
-                        $index = ($students->currentPage() - 1) * $students->perPage() + 1;
-                    @endphp
-                    @foreach($students as $student)
-                        <tr>
+                    $index = ($students->currentPage() - 1) * $students->perPage() + 1;
+                @endphp
+                @foreach($students as $student)
+                    <tr>
                         <td>{{ $index++ }}</td> <!-- Index Column -->
-
-                            <td>{{ $student->name }}</td>
-                            <td>{{ $student->batch->course->name ?? '-' }}</td>
-                            <td>{{ $student->batch->name ?? '-' }}</td>
-                            <td>{{ $student->department->name ?? '-' }}</td>
-                            <td>{{ $seatTypesforTable[$student->seat_type] }}</td>
-                            <td>{{ $studentDetails[$student->id]['donation']}}</td>
-                            <td>{{ $studentDetails[$student->id]['TotalamtPaid']}}</td>
-                            <td>{{ $studentDetails[$student->id]['balancefee']}}</td>
-                            <td>{{ $student->created_at->format('d-m-Y') }}</td>
-                            <td>View</td>
-                        </tr>
-                    @endforeach
+                        <td>{{ $student->name }}</td>
+                        <td>{{ $student->batch->course->name ?? '-' }}</td>
+                        <td>{{ $student->batch->name ?? '-' }}</td>
+                        <td>{{ $student->department->name ?? '-' }}</td>
+                        <td>{{ $seatTypesforTable[$student->seat_type] }}</td>
+                        <td>{{ $studentDetails[$student->id]['donation'] }}</td>
+                        <td>{{ $studentDetails[$student->id]['TotalamtPaid'] }}</td>
+                        <td>{{ $studentDetails[$student->id]['balancefee'] }}</td>
+                        <td>{{ $student->created_at->format('d-m-Y') }}</td>
+                        <td>
+                            <button type="button" class="btn btn-info btn-sm"
+                                data-toggle="modal" data-target="#studentModal" 
+                                data-name="{{ $student->name }}"
+                                data-course="{{ $student->batch->course->name ?? '-' }}"
+                                data-batch="{{ $student->batch->name ?? '-' }}"
+                                data-department="{{ $student->department->name ?? '-' }}"
+                                data-seat="{{ $seatTypesforTable[$student->seat_type] }}"
+                                data-donation="{{ $studentDetails[$student->id]['donation'] }}"
+                                data-fees-paid="{{ $studentDetails[$student->id]['TotalamtPaid'] }}"
+                                data-balance="{{ $studentDetails[$student->id]['balancefee'] }}"
+                                data-paidinst="{{ $studentDetails[$student->id]['paidinst'] }}"
+                                data-tenure="{{ $studentDetails[$student->id]['tenure'] }}"
+                                data-coursefee="{{ $studentDetails[$student->id]['coursefee'] }}">
+                                View
+                            </button>
+                        </td>
+                    </tr>
+                @endforeach
                 </tbody>
                 <tfoot class="bg-light">
                     <tr>
@@ -166,4 +175,112 @@
     </div><!-- /.container-fluid -->
 </div>
 <!-- /.content -->
+
+<!-- Student Detail Modal -->
+<div class="modal fade" id="studentModal" tabindex="-1" role="dialog" aria-labelledby="studentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="studentModalLabel">Student Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th>Name</th>
+                            <td id="student-name"></td>
+                        </tr>
+                        <tr>
+                            <th>Course</th>
+                            <td id="student-course"></td>
+                        </tr>
+                        <tr>
+                            <th>Batch</th>
+                            <td id="student-batch"></td>
+                        </tr>
+                        <tr>
+                            <th>Department</th>
+                            <td id="student-department"></td>
+                        </tr>
+                        <tr>
+                            <th>Seat Type</th>
+                            <td id="student-seat"></td>
+                        </tr>
+                        <tr>
+                            <th>Tenure</th>
+                            <td id="student-tenure"></td>
+                        </tr>
+                        <tr>
+                            <th>Course Fee</th>
+                            <td id="student-coursefee"></td>
+                        </tr>
+                        <tr>
+                            <th>Donation Paid</th>
+                            <td id="student-donation"></td>
+                        </tr>
+                        <tr>
+                            <th>Fees Paid</th>
+                            <td id="student-fees-paid"></td>
+                        </tr>
+                        <tr>
+                            <th>Paid Installment</th>
+                            <td id="student-paidinst"></td>
+                        </tr>
+                        <tr>
+                            <th>Balance Fees</th>
+                            <td id="student-balance"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+$(document).ready(function () {
+    $('#studentModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var name = button.data('name');
+        var course = button.data('course');
+        var batch = button.data('batch');
+        var department = button.data('department');
+        var seat = button.data('seat');
+        var donation = button.data('donation');
+        var feesPaid = button.data('fees-paid');
+        var balance = button.data('balance');
+        var paidinst = button.data('paidinst');
+        var tenure = button.data('tenure');
+        var coursefee = button.data('coursefee');
+
+        // Update the modal's content
+        var modal = $(this);
+        modal.find('#student-name').text(name);
+        modal.find('#student-course').text(course);
+        modal.find('#student-batch').text(batch);
+        modal.find('#student-department').text(department);
+        modal.find('#student-seat').text(seat);
+        modal.find('#student-donation').text(donation);
+        modal.find('#student-fees-paid').text(feesPaid);
+        modal.find('#student-balance').text(balance);
+        modal.find('#student-paidinst').text(paidinst);
+        modal.find('#student-tenure').text(tenure);
+        modal.find('#student-coursefee').text(coursefee);
+    });
+});
+
+    </script>
+@endsection
+
+@section('scripts')
+
 @endsection

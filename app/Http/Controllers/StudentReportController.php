@@ -11,6 +11,8 @@ use App\Models\StudentsExpense;
 use App\Models\StudentsExpenseMasterModel;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Exports\StudentsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StudentReportController extends Controller
 {
@@ -121,4 +123,9 @@ class StudentReportController extends Controller
         $paidPerMonth = $totalFees / $totalMonths;
         return intval($amountPaid / $paidPerMonth);
     }
+    public function export(Request $request)
+{
+    $filters = $request->only(['course_id', 'batch_id', 'department_id', 'seat_type_id', 'from_date', 'to_date']);
+    return Excel::download(new StudentsExport($filters), 'students.xlsx');
+}
 }

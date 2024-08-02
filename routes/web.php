@@ -17,6 +17,8 @@ use App\Http\Controllers\StudentsExpenseMaster;
 use App\Http\Controllers\StudentsExpenseController;
 use App\Http\Controllers\StudentReportController;
 use App\Models\School;
+use App\Exports\StudentsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 // Public Routes
 Route::get('/', function () {
@@ -136,3 +138,4 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/reports/students/index', [StudentReportController::class, 'index'])->name('reports.students.index');
     });
 });
+Route::get('/export-students', [StudentReportController::class, 'export'])->name('export.students');
