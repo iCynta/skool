@@ -60,8 +60,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/course/create', function () {
             return view('course.create');
         })->name('course.create');
-        Route::get('/courses', [CourseController::class, 'index'])->name('course.list');
-        Route::post('/courses', [CourseController::class, 'store'])->name('course.add');
+        Route::get('/course', [CourseController::class, 'index'])->name('course.list');
+        Route::post('/course', [CourseController::class, 'store'])->name('course.add');
     });
 
     // Batch Management

@@ -45,6 +45,8 @@
                     <input type="text" name="code" class="form-control" id="code" required="true" placeholder="Code of course">
                   </div>
 
+                  <input type="hidden" name="school_id" value="1"/>
+
                 <!-- /.card-body -->
 
                 <div class="card-footer">
