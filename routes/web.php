@@ -32,8 +32,6 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 // Routes for authenticated users
 Route::middleware(['auth'])->group(function () {
 
-
-
     $school = School::first();
     session(['school' => $school]); // Store school detail in session
 
