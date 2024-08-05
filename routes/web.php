@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\CourseController;
@@ -12,11 +13,14 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\EmployeeExpenseMasterController;
 use App\Http\Controllers\EmployeeExpenseController;
-
 use App\Http\Controllers\StudentsExpenseMaster;
 use App\Http\Controllers\StudentsExpenseController;
+use App\Http\Controllers\StudentReportController;
 use App\Models\School;
+use App\Exports\StudentsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
+// Public Routes
 Route::get('/', function () {
     return view('auth/login');
 });
@@ -25,12 +29,14 @@ Auth::routes(['register' => false]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-// Custom Routes
+// Routes for authenticated users
+Route::middleware(['auth'])->group(function () {
 
-Route::group(['middleware' => 'auth'], function () {
+
 
     $school = School::first();
     session(['school' => $school]); // Store school detail in session
+
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
@@ -43,7 +49,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('users', [UserController::class, 'update'])->name('user.add');
 
     // School Management
-    Route::group(['middleware' => ['role:Management|Organizer']], function () {
+    Route::middleware(['role:Management|Organizer'])->group(function () {
         Route::get('/schools', [SchoolController::class, 'index'])->name('schools.index');
         Route::post('/schools', [SchoolController::class, 'store'])->name('schools.add');
         Route::get('/schools/create', function () {
@@ -52,7 +58,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     // Course Management
-    Route::group(['middleware' => ['role:Management|Teacher']], function () {
+    Route::middleware(['role:Management|Teacher'])->group(function () {
         Route::get('/course/create', function () {
             return view('course.create');
         })->name('course.create');
@@ -61,58 +67,46 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     // Batch Management
-    Route::group(['middleware' => ['role:Management|Teacher']], function () {
+    Route::middleware(['role:Management|Teacher'])->group(function () {
         Route::get('/batches', [BatchController::class, 'index'])->name('batch.list');
         Route::get('/batch/create', [BatchController::class, 'create'])->name('batch.create');
         Route::post('/batches', [BatchController::class, 'store'])->name('batch.add');
     });
 
     // Department Management
-    Route::group(['middleware' => ['role:Management|Organizer']], function () {
+    Route::middleware(['role:Management|Organizer'])->group(function () {
         Route::get('/departments', [DepartmentController::class, 'index'])->name('department.list');
         Route::get('/department/create', [DepartmentController::class, 'create'])->name('department.create');
         Route::post('/departments', [DepartmentController::class, 'store'])->name('department.add');
     });
 
     // Role and Permission Management
-    Route::group(['middleware' => ['role:Management']], function () {
+    Route::middleware(['role:Management'])->group(function () {
         Route::get('/roles-permissions', [RolePermissionController::class, 'index'])->name('roles-permissions.index');
         Route::put('/roles-permissions/update', [RolePermissionController::class, 'update'])->name('roles-permissions.update');
     });
-    Route::group(['middleware' => ['role:Management|Organizer']], function () {
-        Route::get('/roles-permissions', [RolePermissionController::class, 'index'])->name('roles-permissions.index');
-    });
 
-    //Student Management
-    Route::group(['middleware' => ['role:Management|Organizer']], function () {
-        Route::resource('students', StudentController::class); // Will create all the routes
+    // Student Management
+    Route::middleware(['role:Management|Organizer'])->group(function () {
+        Route::resource('students', StudentController::class)->except(['show']); // Exclude 'show' route if not needed
         Route::post('/students/seats/check', [StudentController::class, 'checkBatchSeatStatus'])->name('students.seats.check');
         Route::post('/students/admission/check', [StudentController::class, 'searchAdmissions'])->name('students.admission.check');
         Route::get('/student/expenses', [StudentsExpenseController::class, 'index'])->name('student.expenses');
         Route::post('/student/expenses/details', [StudentsExpenseController::class, 'searchStudentsDetails'])->name('student.expenses.details');
         Route::post('/student/expenses/reciepts', [StudentsExpenseController::class, 'loadExpenseReciepts'])->name('student.expenses.reciepts');
         Route::post('/student/expenses/reciepts/save', [StudentsExpenseController::class, 'store'])->name('student.expenses.reciepts.save');
-        // routes/web.php
-Route::post('/student/expenses/receipts/update/{id}', [StudentsExpenseController::class, 'update'])->name('student.expenses.reciepts.update');
-
-        // Route::post('/students/expenses', [StudentController::class, 'expensesDetails'])->name('students.expenses');
-        Route::resource('students', StudentController::class)->except(['show']);
-Route::get('/students/loadTable', [StudentController::class, 'loadTable'])->name('students.loadTable');
-Route::get('/reciepts/{id}', [RecieptController::class, 'view'])->name('reciepts');
-
+        Route::post('/student/expenses/receipts/update/{id}', [StudentsExpenseController::class, 'update'])->name('student.expenses.reciepts.update');
+        Route::get('/students/loadTable', [StudentController::class, 'loadTable'])->name('students.loadTable');
+        Route::get('/reciepts/{id}', [RecieptController::class, 'view'])->name('reciepts');
     });
 
-    //Vehicle Management
-    Route::group(['middleware' => ['role:Management|Organizer']], function () {
-        Route::resource('vehicles', VehicleController::class); // Will create all the routes
-        
-        Route::get('/vehicles/expense/', [VehicleController::class, 'CreateExpense'])->name('vehicle.expense.add');
+    // Vehicle Management
+    Route::middleware(['role:Management|Organizer'])->group(function () {
+        Route::resource('vehicles', VehicleController::class);
     });
 
-    //Vehicle Expenses
-    Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
-        Route::resource('vehicles', VehicleController::class); // Will create all the routes
-        
+    // Vehicle Expenses
+    Route::middleware(['role:Management|Organizer|Accountant'])->group(function () {
         Route::get('/vehicles/expense/new', [VehicleController::class, 'CreateExpense'])->name('vehicle.expense.new');
         Route::post('/vehicles/expense/add', [VehicleController::class, 'AddVehicleExpense'])->name('vehicle.expense.store');
         Route::get('/vehicles/expense/index', [VehicleController::class, 'VehicleExpenses'])->name('vehicle.expense.index');
@@ -121,30 +115,27 @@ Route::get('/reciepts/{id}', [RecieptController::class, 'view'])->name('reciepts
     });
 
     // Employee Expense Masters
-    Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
+    Route::middleware(['role:Management|Organizer|Accountant'])->group(function () {
         Route::resource('employee_expense_masters', EmployeeExpenseMasterController::class);
     });
 
     // Employee Expenses
-    Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () { 
+    Route::middleware(['role:Management|Organizer|Accountant'])->group(function () {
         Route::resource('employee/expenses', EmployeeExpenseController::class);
-        //Print Voucher
         Route::get('expense/voucher/print/{voucher}', [EmployeeExpenseController::class, 'printExpenseVoucher'])->name('print.expense.voucher');
-
-    });    
-
-    // Settings
-    Route::group(['middleware' => ['role:Management|Organizer|Accountant']], function () {
-    Route::get('/settings/expense/master', function () {
-        return view('settings.students_expenses');
-    })->name('settings.expense.master');
-    Route::get('/settings/expense/master/list', [StudentsExpenseMaster::class, 'loadStudentsExpense'])
-    ->name('settings.expense.master.list');
-    Route::post('/settings/expense/master/entry/{id?}', [StudentsExpenseMaster::class, 'save'])->name('settings.expense.master.entry');
-
     });
 
-    
-
-
+    // Settings
+    Route::middleware(['role:Management|Organizer|Accountant'])->group(function () {
+        Route::get('/settings/expense/master', function () {
+            return view('settings.students_expenses');
+        })->name('settings.expense.master');
+        Route::get('/settings/expense/master/list', [StudentsExpenseMaster::class, 'loadStudentsExpense'])->name('settings.expense.master.list');
+        Route::post('/settings/expense/master/entry/{id?}', [StudentsExpenseMaster::class, 'save'])->name('settings.expense.master.entry');
+    });
+//reports
+    Route::middleware(['role:Management|Organizer|Accountant'])->group(function () {
+        Route::get('/reports/students/index', [StudentReportController::class, 'index'])->name('reports.students.index');
+    });
 });
+Route::get('/export-students', [StudentReportController::class, 'export'])->name('export.students');

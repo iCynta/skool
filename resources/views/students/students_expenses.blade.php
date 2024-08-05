@@ -15,6 +15,33 @@
 
 
 </style>
+<style>
+/* Style for the select element */
+#admissionSearch {
+  width: 30%; /* Width of the select element */
+  padding: 10px; /* Padding inside the select */
+  font-size: 16px; /* Font size of the text */
+  height: 40px; /* Height of the select element */
+  border-radius: 4px; /* Rounded corners */
+  border: 1px solid #ccc; /* Border color */
+  background-color: #fff; /* Background color */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow for a subtle 3D effect */
+  appearance: none; /* Remove default styling in some browsers */
+}
+
+/* Add a custom arrow */
+#admissionSearch::-ms-expand {
+  display: none; /* Hide default arrow in IE */
+}
+
+#admissionSearch {
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgdmlld0JveD0iMCAwIDEyIDEyIj4KICA8cGF0aCBkPSJNMTIgNEwxMiA4LDEyIDRsLTQgNHoiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYz0icm91bmQiIHN0cm9rZS1vcGFjaXR5PSJub25lIiBzdHJva2UtZGFzaGFycm93PSIxMCIvPjwvc3ZnPg==') no-repeat right center;
+  background-size: 16px 16px; /* Size of the custom arrow */
+  padding-right: 30px; /* Space for the custom arrow */
+}
+</style>
+php artisan orp
+
 <div class="content-header card">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -37,12 +64,12 @@
 <div class="content card">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header bg-light"> Search Admission No</div>
                     <div class="card-body">
                         <div class="form-group d-flex">
-                            <select id="admissionSearch" class="form-control">
+                            <select id="admissionSearch" class="form-control" style="width:30%;">
                                 <option>-- Search with Admission --</option>
                             </select>
                             <button class="btn btn-primary ml-2" id="searchButton">Search</button>
@@ -51,43 +78,6 @@
                         </div>
                     </div>
                     <div class="card-footer bg-light"></div>
-                </div>
-            </div>
-            <div class="col-md-6" id="expenseDropdown" style="display: none;">
-                <div class="card">
-                    <div class="card-header bg-light">Make Payment</div>
-                    <div class="card-body">
-                        <div class="form-group mt-3">
-
-                            <label for="expenseSelect">Select Expense:</label>
-
-                            <select class="form-control" id="expenseSelect">
-                                <option value="">Select an expense</option>
-
-                                @foreach ($expenses as $exprow)
-                                    <option value="{{$exprow['id']}}">{{$exprow['expense_name']}}</option>
-                                @endforeach
-                            </select>
-
-                        </div>
-                        <div class="form-group mt-3">
-                            <label for="feeAmount">Amount:</label>
-                            <input type="number" class="form-control" id="feeAmount" placeholder="Enter Fee Amount"
-                                style="display: none;">
-                        </div>
-                        <div class="form-group mt-3 text-right">
-                            <button class="btn btn-success" id="submitFeeButton" style="display: none;">Make
-                                Payment</button>
-                            <button class="btn btn-success" id="updateFeeButton" style="display:none;">Edit
-                                Payment</button>
-                            <button class="btn btn-warning" id="resetFeeButton" style="display:none;"
-                                onclick="ResetExpense();">Reset</button>
-                            <input type="text" id="expenseid" style="display:none;" />
-                        </div>
-                        <div class="suggestions" id="suggestions" style="display: none;"></div>
-                    </div>
-                    <div class="card-footer">Footer</div>
-
                 </div>
             </div>
             <div class="col-md-6" id="infoBox" style="display: none;">
@@ -151,12 +141,50 @@
                         </div> -->
                 </div>
             </div>
+            <div class="col-md-6" id="expenseDropdown" style="display: none;">
+                <div class="card">
+                    <div class="card-header bg-light">Make Payment</div>
+                    <div class="card-body">
+                        <div class="form-group mt-3">
+
+                            <label for="expenseSelect">Select Expense:</label>
+
+                            <select class="form-control" id="expenseSelect">
+                                <option value="">Select an expense</option>
+
+                                @foreach ($expenses as $exprow)
+                                    <option value="{{$exprow['id']}}">{{$exprow['expense_name']}}</option>
+                                @endforeach
+                            </select>
+
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="feeAmount">Amount:</label>
+                            <input type="number" class="form-control" id="feeAmount" placeholder="Enter Fee Amount"
+                                style="display: none;">
+                        </div>
+                        <div class="form-group mt-3 text-right">
+                            <button class="btn btn-success" id="submitFeeButton" style="display: none;">Make
+                                Payment</button>
+                            <button class="btn btn-success" id="updateFeeButton" style="display:none;">Edit
+                                Payment</button>
+                            <button class="btn btn-warning" id="resetFeeButton" style="display:none;"
+                                onclick="ResetExpense();">Reset</button>
+                            <input type="text" id="expenseid" style="display:none;" />
+                        </div>
+                        <div class="suggestions" id="suggestions" style="display: none;"></div>
+                    </div>
+                    <div class="card-footer"></div>
+
+                </div>
+            </div>
+         
 
         </div>
 
         <div class="col-md-12">
             <div class="card">
-                <div class="card-head">Payments</div>
+                <div class="card-head">Payment History</div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-striped" id="student-table">
