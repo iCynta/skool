@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('employee_expenses', function (Blueprint $table) {
             $table->id();
-            $table->string('voucher_no', 20)->unique();
+            $table->string('voucher_no', 20)->nullable();
             $table->unsignedBigInteger('employee_id');
             $table->unsignedBigInteger('expense_id');
             $table->unsignedBigInteger('created_by');

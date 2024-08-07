@@ -55,17 +55,20 @@ class EmployeeExpenseController extends Controller
             ///'created_by' => 'required|exists:users,id',
             // 'settled' => 'required|boolean',
         ]);
+        
      
         try {
             $expense = new EmployeeExpense();
+            
             $expense->employee_id = $validatedData['employee_id'];
             $expense->expense_id = $validatedData['expense_id'];
-            $expense->voucher_no = rand(100000, 999999) . now()->format('YmdHis');
             $expense->description = $validatedData['description'];
             $expense->created_by = auth()->id();
             $expense->amount = $validatedData['amount'];
             $expense->settled = 0;
             $expense->save();
+            $voucher_no = 'VOU-' . str_pad($expense->id, 6, '0', STR_PAD_LEFT);
+            $expense->update(['voucher_no' => $voucher_no]);
 
             return redirect()->route('expenses.index')->with('success', 'Expense added successfully!');
         } catch (\Exception $e) {

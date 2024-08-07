@@ -10,6 +10,7 @@ use App\Models\StudentsExpense;
 use App\Models\StudentsExpenseMasterModel;
 use App\Models\School;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class StudentsExpenseController extends Controller
 {
@@ -108,9 +109,11 @@ class StudentsExpenseController extends Controller
     }
     public function store(Request $request)
     {
+        $created_by = (int) Auth::user()->id;
+        
         // Validate the incoming request data if needed
-        $validatedData = ['student_id'=>$request->admission_no,'expense_id'=>$request->expense_id,'amount'=>$request->amount];
-    
+        $validatedData = ['student_id'=>$request->admission_no,'expense_id'=>$request->expense_id,'amount'=>$request->amount, 'created_by'=>$created_by];
+        
         // Create the student and retrieve the instance
         $student = StudentsExpense::create($validatedData);
     

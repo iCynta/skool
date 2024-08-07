@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('reciept_no', 191)->nullable(); // Make receipt_no nullable
             $table->unsignedBigInteger('expense_id'); // Expense ID
             $table->decimal('amount', 10, 2); // Amount with 2 decimal places
+            $table->unsignedBigInteger('created_by');
             $table->timestamps();
         });
     }

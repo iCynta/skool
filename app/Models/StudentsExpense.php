@@ -18,6 +18,7 @@ class StudentsExpense extends Model
         'expense_id',
         'reciept_no',
         'amount',
+        'created_by'
     ];
 
     // Define relationships if necessary
@@ -26,6 +27,11 @@ class StudentsExpense extends Model
     public function student()
     {
         return $this->belongsTo(Student::class);
+    }
+
+    public function created_by()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function expense()
