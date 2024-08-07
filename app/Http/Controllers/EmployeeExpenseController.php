@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\School;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
@@ -134,8 +135,9 @@ class EmployeeExpenseController extends Controller
     public function printExpenseVoucher($voucher)
     {
         $expense = EmployeeExpense::where('voucher_no', $voucher)->with(['employee', 'expenseMaster', 'createdBy'])->firstOrFail();
+        $school = School::find(1);
 
-        $pdf = PDF::loadView('employee_expenses.voucher-print', compact('expense'));
+        $pdf = PDF::loadView('employee_expenses.voucher-print', compact('expense','school'));
         return $pdf->stream('Vouch-'.$expense->voucher_no.'.pdf');
 
     }

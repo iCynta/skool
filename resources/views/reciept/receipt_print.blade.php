@@ -19,7 +19,7 @@
             margin-top:0px;
             width:100%;
             height:100px;
-            text-align: center;
+            /* text-align: center; */
             font-weight:bold;
             border-bottom: 1px solid #333333;
         }
@@ -88,10 +88,16 @@
     <div class="voucher_container">
         <div class="voucher">
             <div class="voucher_head">
-                <p class="voucher_title">{{$school->name}} </p>
-                <address class="text-muted">{{$school->address}}</address>
-                <p class="text-muted"><abbr title="Phone">Phone:</abbr> {{$school->phone}}</p>
-                
+                <div class="row">
+                    <div class="col-md-3" style=" width:25%; height:100%; v-align:middle; text-align:center; float:left;">
+                        <img src="{{ asset('dist/img/logo-square-big.jpeg') }}" alt="logo" style="width: 90px; margin-top:5px;" class="img-circle elevation-3">
+                    </div>
+                    <div class="col-md-8" style=" width:74%; height:100%; text-align:center; float:left;">
+                        <p class="voucher_title">{{$school->name}} </p>
+                        <address class="text-muted text-sm">{{$school->address}}</address>
+                        <p class="text-muted text-sm"><abbr title="Phone">Phone:</abbr> {{$school->phone}}</p>
+                    </div>   
+                </div>
             </div>
             <div id="voucher_detail">                
                 <p class="text-sm text-muted">Receipt #:{{ $expense->reciept_no }}</p>
