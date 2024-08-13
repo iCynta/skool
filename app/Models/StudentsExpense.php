@@ -18,11 +18,10 @@ class StudentsExpense extends Model
         'expense_id',
         'reciept_no',
         'amount',
-        'created_by'
+        'created_by',
+        'settled'
     ];
 
-    // Define relationships if necessary
-    // Assuming you have a Student model and an Expense model
 
     public function student()
     {

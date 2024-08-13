@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\CourseController;
@@ -123,6 +124,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('expense/voucher/print/{voucher}', [EmployeeExpenseController::class, 'printExpenseVoucher'])->name('print.expense.voucher');
     });
 
+    // Employee Payments
+    Route::middleware(['role:Management|Organizer|Accountant'])->group(function () {
+        Route::get('payment/create/', [PaymentController::class, 'create'])->name('payment.create');
+        Route::get('payment/store/', [PaymentController::class, 'store'])->name('payments.store');
+        
+    });
+
     // Settings
     Route::middleware(['role:Management|Organizer|Accountant'])->group(function () {
         Route::get('/settings/expense/master', function () {
@@ -137,3 +145,10 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 Route::get('/export-students', [StudentReportController::class, 'export'])->name('export.students');
+
+// Route to load management users for drop down listing
+Route::get('/api/management/users', function (Request $request) {
+    $courseId = $request->query('course_id');
+    $users = \App\Models\User::where('course_id', $courseId)->get(['id', 'name']);
+    return response()->json(['users' => $users]);
+});

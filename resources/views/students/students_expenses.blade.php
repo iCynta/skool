@@ -40,7 +40,6 @@
   padding-right: 30px; /* Space for the custom arrow */
 }
 </style>
-php artisan orp
 
 <div class="content-header card">
     <div class="container-fluid">
