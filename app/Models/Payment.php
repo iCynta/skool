@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Payment extends Model
@@ -13,8 +14,34 @@ class Payment extends Model
         'paid_by',
         'payment_type',
         'paid_to',
-        'paid_date',
+        'amount',
         'detail',
-        'payment_slip'
+        'payment_slip',
+        'selected_payments',
+        'paid_date',
     ];
+
+    protected $casts = [
+        'selected_payments' => 'array', // Cast selected_payments as an array
+    ];
+
+    public function relatedExpenses()
+    {
+        return StudentsExpense::whereIn('id', $this->selected_payments ?? [])->get();
+    }    
+
+    public function relatedStudentExpense()
+    {
+        return StudentsExpense::whereIn('id', $this->selected_payments);
+    }
+
+    public function paidTo()
+    {
+        return $this->belongsTo(User::class, 'paid_to');
+    }
+
+    public function paidBy()
+    {
+        return $this->belongsTo(User::class, 'paid_by');
+    }
 }

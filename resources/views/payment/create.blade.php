@@ -3,14 +3,14 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<div class="content-header">
+<div class="content-header card">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-8">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
                     <li class="breadcrumb-item">Payments</li>
-                    <li class="breadcrumb-item active">{{ isset($payment) ? 'Edit' : 'New' }}</li>
+                    <li class="breadcrumb-item active">settle</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -24,114 +24,99 @@
         <div class="container">
             <div class="card card-dark">
                 <div class="card-header">
-                    <h3 class="card-title">{{ isset($payment) ? 'Edit Payment' : 'Add Payment' }}</h3>
+                    <h3 class="card-title">Payments to Settle</h3>
+                    <a href="{{route('payments.history')}}" class="btn btn-sm btn-info float-right">View History</a>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <!-- form start -->
-                    <form
-                        action="{{ isset($payment) ? route('payments.update', $payment->id) : route('payments.store') }}"
-                        method="POST" enctype="multipart/form-data" class="form-horizontal">
-                        @csrf
-                        @if(isset($payment))
-                            @method('PUT')
-                        @endif
+                    <div class="table-responsive">
 
-                        <!-- <div class="form-group row">
-                            <label for="paid_by" class="col-sm-2 col-form-label">Paid By:</label>
-                            <div class="col-sm-10">
-                                <input type="number" name="paid_by" class="form-control @error('paid_by') is-invalid @enderror" value="{{ old('paid_by', $payment->paid_by ?? '') }}" required>
-                                @error('paid_by')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div> -->
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Receipt No</th>
+                                    <th>Received For</th>
+                                    <th>Received From</th>
+                                    <th>Received On</th>
+                                    <th>Amount</th>
+                                    <th>Settle</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($payments_to_settle as $payment_to_settle)
+                                <tr>
+                                    <td>{{ $payment_to_settle->reciept_no }}</td>
+                                    <td>{{ $payment_to_settle->expense->expense_name }}</td>
+                                    <td>{{ $payment_to_settle->student->name }}</td>
+                                    <td>{{ $payment_to_settle->created_at }}</td>
+                                    <td class="amount">{{ $payment_to_settle->amount }}</td>
+                                    <td>
+                                        <input type="checkbox" value="{{ $payment_to_settle->id }}" name="payments[]"
+                                            class="payment-checkbox">
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="6">No payments to settle.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="6">{{ $payments_to_settle->links('vendor.pagination.bootstrap-4') }}
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
 
-                        <div class="form-group row">
-                            <label for="payment_type" class="col-sm-2 col-form-label">Payment Type:</label>
-                            <div class="col-sm-10">
-                                <select name="payment_type" id="payment_type"
-                                    class="form-control @error('payment_type') is-invalid @enderror" required>
-                                    <option value="" disabled {{ old('payment_type', $payment->payment_type ?? '') == '' ? 'selected' : '' }}>Select Payment Type</option>
-                                    <option value="Bank" {{ old('payment_type', $payment->payment_type ?? '') == 'Bank' ? 'selected' : '' }}>Bank</option>
-                                    <option value="Management" {{ old('payment_type', $payment->payment_type ?? '') == 'Management' ? 'selected' : '' }}>Management</option>
-                                </select>
-                                @error('payment_type')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                        <!-- Inline Form -->
+                        <form action="{{ route('payments.cashInHand.settle') }}" method="POST" class="form-horizontal">
+                            @csrf
+                        
+                            <div class="form-row">
+                                <div class="form-group col-md-2">
+                                    <label for="totalAmount">Total Amount:</label>
+                                    <input type="text" class="form-control" id="totalAmount" name="amount" readonly>
+                                </div>
+                        
+                                <input type="hidden" id="selectedPayments" name="selected_payments">
+                        
+                                <div class="form-group col-md-2">
+                                    <label for="paymentType">Settle As:</label>
+                                    <select class="form-control" id="paymentType" name="payment_type">
+                                        <option value="management">Management</option>
+                                        <option value="bank">Bank</option>
+                                        <option value="treasury">Treasury</option>
+                                    </select>
+                                </div>
+                        
+                                <div class="form-group col-md-2">
+                                    <label for="paid_to">Paid to:</label>
+                                    <select class="form-control" id="paid_to" name="paid_to">
+                                        <option value="">--Select--</option>
+                                        @forelse($recipients as $recipient)
+                                            <option value="{{ $recipient->id }}">{{ $recipient->name }}</option>
+                                        @empty
+                                        <option value="">--No Receipts--</option>
+                                        @endforelse
+                                    </select>
+                                </div>
+                        
+                                <div class="form-group col-md-4">
+                                    <label for="detail">Description:</label>
+                                    <textarea class="form-control" id="detail" name="detail" rows="1" placeholder="Enter description here"></textarea>
+                                </div>
+                        
+                                <div class="form-group col-md-2 align-self-end">
+                                    <button type="submit" class="btn btn-primary">Settle Payments</button>
+                                </div>
                             </div>
-                        </div>
+                        </form>
+                                        
 
-                        <!-- User Field -->
-                        <div class="form-group row">
-                            <label for="paid_to" class="col-sm-2 col-form-label">Paid To (optional):</label>
-                            <div class="col-sm-10">
-                                <select name="paid_to" id="paid_to"
-                                    class="form-control @error('paid_to') is-invalid @enderror">
-                                    <option value="" disabled {{ old('paid_to', $payment->paid_to ?? '') == '' ? 'selected' : '' }}>Select User</option>
-                                    <!-- User options will be dynamically loaded -->
-                                </select>
-                                @error('paid_to')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
 
-                        <!-- <div class="form-group row">
-                            <label for="paid_date" class="col-sm-2 col-form-label">Paid Date:</label>
-                            <div class="col-sm-10">
-                                <input type="datetime-local" name="paid_date" class="form-control @error('paid_date') is-invalid @enderror" value="{{ old('paid_date', isset($payment->paid_date) ? $payment->paid_date->format('Y-m-d\TH:i') : '') }}" required>
-                                @error('paid_date')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div> -->
 
-                        <div class="form-group row">
-                            <label for="detail" class="col-sm-2 col-form-label">Payment Detail (optional):</label>
-                            <div class="col-sm-10">
-                                <textarea name="detail"
-                                    class="form-control @error('detail') is-invalid @enderror">{{ old('detail', $payment->detail ?? '') }}</textarea>
-                                @error('detail')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="payment_slip" class="col-sm-2 col-form-label">Payment Slip (optional):</label>
-                            <div class="col-sm-10">
-                                <input type="file" name="payment_slip"
-                                    class="form-control @error('payment_slip') is-invalid @enderror"
-                                    accept=".pdf,.jpeg,.jpg,.png,.gif">
-                                @error('payment_slip')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                                @if(isset($payment) && $payment->payment_slip)
-                                    <p>Current File: {{ $payment->payment_slip }}</p>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-sm-10 offset-sm-2">
-                                <button type="submit" class="btn btn-dark">{{ isset($payment) ? 'Update' : 'Create' }}
-                                    Payment</button>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
 
                 </div>
             </div>
@@ -143,34 +128,32 @@
 
 
 @push('scripts')
-    <script>
-        document.getElementById('payment_type').addEventListener('change', function () {
-            const paymentType = this.value;
-            const paidToSelect = document.getElementById('paid_to');
+<!-- JavaScript to calculate total amount and manage selected IDs -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('.payment-checkbox');
+        const totalAmountField = document.getElementById('totalAmount');
+        const selectedPaymentsField = document.getElementById('selectedPayments');
 
-            if (paymentType === 'Management') {
-                fetchUsersWithCourse(1).then(users => {
-                    // Clear existing options
-                    paidToSelect.innerHTML = '<option value="" disabled>Select User</option>';
-
-                    // Populate new options
-                    users.forEach(user => {
-                        const option = document.createElement('option');
-                        option.value = user.id;
-                        option.textContent = user.name;
-                        paidToSelect.appendChild(option);
-                    });
-                });
-            } else {
-                // Clear the select if not 'Management'
-                paidToSelect.innerHTML = '<option value="" disabled>Select User</option>';
-            }
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateForm);
         });
 
-        async function fetchUsersWithCourse(courseId) {
-            const response = await fetch(`/api/management/users?course_id=${courseId}`);
-            const data = await response.json();
-            return data.users;
+        function updateForm() {
+            let totalAmount = 0;
+            let selectedIds = [];
+
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    const amount = parseFloat(checkbox.closest('tr').querySelector('.amount').innerText);
+                    totalAmount += amount;
+                    selectedIds.push(checkbox.value);
+                }
+            });
+
+            totalAmountField.value = totalAmount.toFixed(2);
+            selectedPaymentsField.value = selectedIds.join(',');
         }
-    </script>
+    });
+</script>
 @endpush

@@ -37,4 +37,6 @@ class StudentsExpense extends Model
     {
         return $this->belongsTo(StudentsExpenseMasterModel::class);
     }
+
+
 }

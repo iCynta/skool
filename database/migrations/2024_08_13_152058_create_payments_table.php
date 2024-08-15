@@ -16,18 +16,27 @@ return new class extends Migration
             $table->foreignId('paid_by')->constrained('users')->onDelete('cascade');
         
             // Payment type (e.g., User, Bank, etc.)
-            $table->string('payment_type', 20);
+            $table->string('payment_type', 100);
             $table->foreignId('paid_to')->nullable()->constrained('users')->onDelete('set null');
-            $table->dateTime('paid_date');
+        
             // Payment detail
-            $table->string('detail')->nullable();        
+            $table->string('detail')->nullable();
+            
             // Payment slip (assumed to be a string, possibly a file path)
-            $table->string('payment_slip')->nullable();        
+            $table->string('payment_slip')->nullable();
+            
+            // JSON field to store selected payments
+            $table->json('selected_payments')->nullable();
+
+            $table->dateTime('paid_date');
+            
             // Soft deletes
-            $table->softDeletes();            
+            $table->softDeletes();
+            
             // Timestamps
             $table->timestamps();
         });
+        
         
     }
 
