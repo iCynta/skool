@@ -18,11 +18,17 @@ class PaymentController extends Controller
 
     public function index()
     {
+        // Get total amount paid to each payment type
+        $totalsByType = $this->getTotalByPaymentType();
+
+        // Get total amount paid to each user for the 'management' payment type
+        $totalsByUserForManagement = $this->getTotalPaidByUserForManagement();
+
         $payments = Payment::where('paid_by',Auth::User()->id)->with('paidTo', 'paidBy')->get();
         foreach ($payments as $payment) {
             $payment->relatedExpenses = $payment->relatedStudentExpense()->with('expense', 'student')->get();
         }
-        return view('payment.index', compact('payments' ));
+        return view('payment.index', compact('payments','totalsByType', 'totalsByUserForManagement' ));
     }
     // Create payment
     public function create()
@@ -161,4 +167,30 @@ class PaymentController extends Controller
 
         return $filename;
     }
+
+
+    // Total paid to each payment type
+    public function getTotalByPaymentType()
+    {
+        $totalsByType = Payment::select('payment_type')
+                                ->selectRaw('SUM(amount) as total_amount')
+                                ->groupBy('payment_type')
+                                ->get();
+
+        return $totalsByType;
+    }
+
+    //Total paid to each management user
+    public function getTotalPaidByUserForManagement()
+    {
+        $totalsByUser = Payment::where('payment_type', 'management')
+                                ->select('paid_to')
+                                ->selectRaw('SUM(amount) as total_amount')
+                                ->groupBy('paid_to')
+                                ->with('paidTo') // Assuming 'paidTo' is a relationship to get user details
+                                ->get();
+    
+        return $totalsByUser;
+    }
+    
 }
