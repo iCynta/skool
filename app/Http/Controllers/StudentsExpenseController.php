@@ -82,33 +82,35 @@ class StudentsExpenseController extends Controller
     }
     public function loadExpenseReciepts(Request $request)
     {
-        // Adjust the pagination size as needed
-        $students = StudentsExpense::where('student_id',$request->admission_no)->get();
+        // Adjust the pagination size as needed, e.g., 10 items per page
+        $students = StudentsExpense::where('student_id', $request->admission_no)
+        ->orderBy('created_at', 'desc') // Order by 'created_at' column in descending order
+        ->paginate(5);
     
         $disp = ''; // Initialize $disp to avoid undefined variable notice
-    
+        
         foreach ($students as $student) {
-            $std=StudentsExpenseMasterModel::where('id',$student->expense_id)->first();
+            $std = StudentsExpenseMasterModel::where('id', $student->expense_id)->first();
             $disp .= '<tr>';
-            $disp .= '<td>' . $student->id . '</td>';
+            // $disp .= '<td>' . $student->id . '</td>';
             $disp .= '<td>' . $student->created_at . '</td>';
             $disp .= '<td>' . $std->expense_name . '</td>';
-            $disp .= '<td><a  target="_blank" href="' . route('reciepts', ['id' => $student->reciept_no]) . '">' . $student->reciept_no . '</a></td>';
+            $disp .= '<td><a target="_blank" href="' . route('reciepts', ['id' => $student->reciept_no]) . '">' . $student->reciept_no . '</a></td>';
             $disp .= '<td>' . $student->amount . '</td>';
-            $disp .= '<td><button type="button" class="btn btn-danger" data-id="'.$student->id.'" data-expense_name ="'.$student->expense_id.'"  data-amount ="'.$student->amount.'"onclick="editExpense(this)">Edit</button></td>';
+            $disp .= '<td><button type="button" class="btn btn-danger" data-id="' . $student->id . '" data-expense_name="' . $student->expense_id . '" data-amount="' . $student->amount . '" onclick="editExpense(this)">Edit</button></td>';
             $disp .= '</tr>';
         }
-
     
-        // $paginate = $students->links('vendor.pagination.bootstrap-4')->toHtml();
+        $paginate = $students->links('vendor.pagination.bootstrap-4')->toHtml();
     
         $response = [
             'status' => 200,
             'data' => $disp,
-            // 'links' => $paginate
+            'links' => $paginate
         ];
         return response()->json($response);
     }
+    
     public function create(Request $request)
     {
         try {
@@ -262,7 +264,11 @@ class StudentsExpenseController extends Controller
                 $exceeded=1;  
                 $msg='Fees Exceeded ! Please Enter Vaid Amount';
             }
-            
+            else if($outstandingAmount<$totalFees)
+            {
+                $exceeded=0;  
+                $msg='Not Exceeded';
+            }
             $response = [
              'feesExeeded' => $exceeded,
              'msg'=>$msg
@@ -287,7 +293,11 @@ class StudentsExpenseController extends Controller
                 $exceeded=1;  
                 $msg='Donation Exceeded ! Please Enter Vaid Amount';
             }
-       
+            else if($outstandingDonation<$students->donation)
+            {
+                $exceeded=0;  
+                $msg='Not Exceeded';
+            }
             $response = [
              'feesExeeded' => $exceeded,
              'msg'=>$msg

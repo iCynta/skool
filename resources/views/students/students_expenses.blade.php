@@ -185,7 +185,7 @@
                         <table class="table table-striped" id="student-table">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <!-- <th>ID</th> -->
                                     <th>Date</th>
                                     <th>Expense Name</th>
                                     <th>ReceiptNo</th>
@@ -401,17 +401,28 @@
         $('#resetFeeButton').hide();
 
     }
-    function loadExpenses() {
+    function loadExpenses(page = 1) {
         $.ajax({
-            url: '{{ route("student.expenses.reciepts")}}', // Update this URL to your search route
+            url: '{{ route("student.expenses.reciepts") }}', // Update this URL to your search route
             method: 'POST',
-            data: { admission_no: $('#admissionSearch').val(), _token: '{{ csrf_token() }}' },
+            data: { 
+                admission_no: $('#admissionSearch').val(), 
+                page: page,
+                _token: '{{ csrf_token() }}' 
+            },
             success: function (response) {
                 $('#student-table tbody').html(response.data);
-                // $('#pagination-links').html(response.links);
+                $('#pagination-links').html(response.links);
+
+                // Attach click event to pagination links
+                $('#pagination-links a').click(function (e) {
+                    e.preventDefault(); // Prevent default link behavior
+                    var url = $(this).attr('href');
+                    var page = new URL(url).searchParams.get('page'); // Extract page number from URL
+                    loadExpenses(page); // Load the selected page
+                });
             }
         });
-
     }
     function calculateFee()
     {     
