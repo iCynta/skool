@@ -370,6 +370,7 @@
                     });
                     loadExpenses();
                     ResetExpense();
+                    $('#searchButton').click();
                 },
                 error: function (xhr, status, error) {
                     // Handle error response

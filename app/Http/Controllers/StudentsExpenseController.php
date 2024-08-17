@@ -158,12 +158,7 @@ class StudentsExpenseController extends Controller
     {
            
         $update=['expense_id'=>$request->expense_id,'amount'=>$request->amount];
-        $stdetails=StudentsExpense::where('id', $id);
-        dd($stdetails);
-        $studentsData = $this->searchStudentsDetailsInternal($request->input('admission_no'));
-        $totalFeesRequired=$studentsData['coursefee'];
-        $totalFeesRequired=$studentsData['coursefee'];
-
+        // $stdetails=StudentsExpense::where('id', $id);
         if ($id) {
             
             // Find the existing expense
