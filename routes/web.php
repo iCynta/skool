@@ -95,6 +95,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/student/expenses/details', [StudentsExpenseController::class, 'searchStudentsDetails'])->name('student.expenses.details');
         Route::post('/student/expenses/reciepts', [StudentsExpenseController::class, 'loadExpenseReciepts'])->name('student.expenses.reciepts');
         Route::post('/student/expenses/reciepts/save', [StudentsExpenseController::class, 'create'])->name('student.expenses.reciepts.save');
+        Route::post('/student/expenses/feesexceed/check', [StudentsExpenseController::class, 'checkStudentFeesExceeded'])->name('student.expenses.feesexceed.check');
         Route::post('/student/expenses/receipts/update/{id}', [StudentsExpenseController::class, 'update'])->name('student.expenses.reciepts.update');
         Route::get('/students/loadTable', [StudentController::class, 'loadTable'])->name('students.loadTable');
         Route::get('/reciepts/{id}', [RecieptController::class, 'view'])->name('reciepts');

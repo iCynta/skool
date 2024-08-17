@@ -115,7 +115,7 @@
                                         <td id="tenuture"></td>
                                     </tr>
                                     <tr>
-                                        <td>Donation</td>
+                                        <td>Donation Paid</td>
                                         <td id="donation"></td>
                                     </tr>
                                     <tr>
@@ -123,11 +123,11 @@
                                         <td id="paidinst"></td>
                                     </tr>
                                     <tr>
-                                        <td>Total Paid </td>
+                                        <td>Total Tution Fees Paid </td>
                                         <td id="TotalamtPaid"></td>
                                     </tr>
                                     <tr>
-                                        <td>Balance Fee</td>
+                                        <td>Balance Fees</td>
                                         <td id="balancefee"></td>
                                     </tr>
                                 </tbody>
@@ -146,9 +146,9 @@
                     <div class="card-body">
                         <div class="form-group mt-3">
 
-                            <label for="expenseSelect">Select Expense:</label>
+                            <label for="expenseSelect">Select Expense:<span id="experror" style="color:red;"></span></label>
 
-                            <select class="form-control" id="expenseSelect">
+                            <select class="form-control" id="expenseSelect" onchange="$('#experror').hide();">
                                 <option value="">Select an expense</option>
 
                                 @foreach ($expenses as $exprow)
@@ -160,7 +160,8 @@
                         <div class="form-group mt-3">
                             <label for="feeAmount">Amount:</label>
                             <input type="number" class="form-control" id="feeAmount" placeholder="Enter Fee Amount"
-                                style="display: none;">
+                            oninput="calculateFee()" style="display: none;"><span id="valmsg"style="color:red;"></span>
+                                
                         </div>
                         <div class="form-group mt-3 text-right">
                             <button class="btn btn-success" id="submitFeeButton" style="display: none;">Make
@@ -272,7 +273,7 @@
                     $('#paidinst').text(response.paidinst);
                     $('#TotalamtPaid').text(response.TotalamtPaid);
                     $('#balancefee').text(response.balancefee);
-                    $('#donation').text(response.donation);
+                    $('#donation').text(response.donation+' / '+response.donationFeesAgreed);
                     $('#infoBox').show();
                     $('#feeAmount').show(); // Show fee amount input
                     $('#expenseDropdown').show(); // Show dropdown
@@ -386,6 +387,64 @@
             }
         });
 
+    }
+    function calculateFee()
+    {     
+        
+           $('#experror').html('');
+            var feeAmount = $('#feeAmount').val();
+            var expenseId = $('#expenseSelect').val();
+            if(expenseId=='')
+            {  
+                $('#experror').show();
+                $('#experror').html('* Please Select Expense !');
+                $('#submitFeeButton').hide();
+                // $('#updateFeeButton').hide();
+            
+            }
+            else
+            {
+                $('#experror').html('');
+                $.ajax({
+                url: '{{ route("student.expenses.feesexceed.check")}}', // Update this URL to your submit fee route
+                method: 'POST',
+                data: {
+                    admission_no: $('#admissionSearch').val(),
+                    amount: feeAmount,
+                    expense_id: expenseId,
+                    _token: '{{ csrf_token() }}' // Add CSRF token for security
+                },
+                success: function (response) {
+                    if(response.feesExeeded==1)
+                {
+                    $('#valmsg').show();
+                    $('#submitFeeButton').hide();
+                    $('#updateFeeButton').hide();
+                    $('#valmsg').html(response.msg);
+                }
+                else  if(response.feesExeeded==0)
+                {
+                    $('#submitFeeButton').show();
+                    // $('#updateFeeButton').show();
+                    $('#valmsg').hide();
+                }
+                  
+                 // loadExpenses();
+                    // $('#searchButton').click();
+                    // Swal.fire({
+                    //     title: response.msg,
+                    //     icon: "success"
+                    // });
+                    // Reset fields or perform other actions
+                },
+                error: function (xhr) {
+                    alert('An error occurred. Please try again.');
+                }
+            });
+            }
+            
+            // Perform your AJAX submit here
+          
     }
 </script>
 

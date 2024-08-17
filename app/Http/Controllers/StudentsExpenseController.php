@@ -59,6 +59,7 @@ class StudentsExpenseController extends Controller
         $donationPaid = StudentsExpense::where('student_id', $request->admission_no)
         ->where('expense_id', 2)
         ->sum('amount'); // Amount paid
+        $monthlabel=($monthsPaid>1)?'Months':'Month';
         $response = [
             'status' => 200,
             'batch' =>$batch->name,
@@ -68,10 +69,11 @@ class StudentsExpenseController extends Controller
             'dob'=>$students->dob,
             'coursefee'=>$batch->tution_fee.' INR',
             'tenuture'=>$batch->course_tenure.' Months',
-            'paidinst'=>$monthsPaid,
+            'paidinst'=>$monthsPaid.' '.$monthlabel,
             'TotalamtPaid'=>$amountPaid.' INR',
             'balancefee'=>$balance.' INR',
-            'donation'=>$donationPaid.' INR'
+            'donation'=>$donationPaid.' INR',
+            'donationFeesAgreed'=>$students->donation.' INR'
         ];
     
         // Return JSON response
@@ -112,23 +114,19 @@ class StudentsExpenseController extends Controller
         try {
             $created_by = (int) Auth::user()->id;
     
-            // Update the validation rule if the table name is incorrect
-            $validatedData = $request->validate([
-                'admission_no' => 'required|integer|exists:students,id',
-                'expense_id' => 'required|integer|exists:expenses,id', // Update to match the correct table name
-                'amount' => 'required|numeric|min:0'
-            ]);
-    
+            // Directly use the request data without validation
             $data = [
-                'student_id' => $validatedData['admission_no'],
-                'expense_id' => $validatedData['expense_id'],
-                'amount' => $validatedData['amount'],
+                'student_id' => $request->input('admission_no'),
+                'expense_id' => $request->input('expense_id'),
+                'amount' => $request->input('amount'),
                 'created_by' => $created_by
             ];
-            dd($data);
     
             // Create the expense record
+          
+          
             $studentExpense = StudentsExpense::create($data);
+           
             
             // Generate and update the receipt number
             $receipt_no = 'REC-' . str_pad($studentExpense->id, 6, '0', STR_PAD_LEFT);
@@ -153,10 +151,17 @@ class StudentsExpenseController extends Controller
     }
     
     
+    
     public function update(Request $request, $id=null)
     {
            
         $update=['expense_id'=>$request->expense_id,'amount'=>$request->amount];
+        $stdetails=StudentsExpense::where('id', $id);
+        dd($stdetails);
+        $studentsData = $this->searchStudentsDetailsInternal($request->input('admission_no'));
+        $totalFeesRequired=$studentsData['coursefee'];
+        $totalFeesRequired=$studentsData['coursefee'];
+
         if ($id) {
             
             // Find the existing expense
@@ -171,5 +176,126 @@ class StudentsExpenseController extends Controller
 
            // Return JSON response
            return response()->json($response);
+    }
+
+
+    public function searchStudentsDetailsInternal($addmissno)
+    {
+        $students=Student::where('id',$addmissno)->first();
+     
+        $batch=Batch::where('id',$students->batch_id)->first();
+        $Course=Course::where('id',$students->course_id)->first();
+        $Department=Department::where('id',$students->department_id)->first();
+      
+        $totalInstallments=$batch->course_tenure;
+        $totalFees = $batch->tution_fee; // Total fees
+        $amountPaid = StudentsExpense::where('student_id', $addmissno)
+        ->where('expense_id', 1)
+        ->sum('amount'); // Amount paid
+        $totalMonths = $batch->course_tenure; // Total months for payment
+        $balance=$totalFees-$amountPaid;
+        $monthsPaid = $this->calculateMonthsPaid($totalFees, $amountPaid, $totalMonths);
+        $donationPaid = StudentsExpense::where('student_id', $addmissno)
+        ->where('expense_id', 2)
+        ->sum('amount'); // Amount paid
+        $response = [
+            'status' => 200,
+            'batch' =>$batch->name,
+            'name' =>$students->name,
+            'course'=>$Course->name,
+            'department'=>$Department->name,
+            'dob'=>$students->dob,
+            'coursefee'=>$batch->tution_fee,
+            'tenuture'=>$batch->course_tenure,
+            'paidinst'=>$monthsPaid,
+            'TotalamtPaid'=>$amountPaid,
+            'balancefee'=>$balance,
+            'donation'=>$donationPaid,
+            'donationFeesAgreed'=>$students->donation
+        ];
+    
+        // Return JSON response
+        return $response;
+
+    }
+
+
+    public function checkStudentFeesExceeded(Request $request)
+    {
+        $expense_id=$request->expense_id;
+        $amount=$request->amount;
+        $students=Student::where('id',$request->admission_no)->first(); 
+        $batch=Batch::where('id',$students->batch_id)->first();
+        $Course=Course::where('id',$students->course_id)->first();
+        $Department=Department::where('id',$students->department_id)->first();
+      
+        $totalInstallments=$batch->course_tenure;
+        $totalFees = $batch->tution_fee; // Total fees
+        $amountPaid = StudentsExpense::where('student_id', $request->admission_no)
+        ->where('expense_id', 1)
+        ->sum('amount'); // Amount paid
+        $totalMonths = $batch->course_tenure; // Total months for payment
+        $balance=$totalFees-$amountPaid;
+        $monthsPaid = $this->calculateMonthsPaid($totalFees, $amountPaid, $totalMonths);
+        $donationPaid = StudentsExpense::where('student_id', $request->admission_no)
+        ->where('expense_id', 2)
+        ->sum('amount'); // Amount paid
+      
+        $exceeded=0;
+        $msg='Not Exceeded';
+     
+        if($expense_id==1)
+        {
+            $outstandingAmount=$amount+$balance;
+            if($balance==0)
+            {
+                $exceeded=1;  
+                $msg='Full Fees already paid';
+            }
+            else if($amount==$balance)
+            {
+                $exceeded=0;  
+                $msg='Not Exceeded';
+            }
+            else if($outstandingAmount>$totalFees)
+            {
+                $exceeded=1;  
+                $msg='Fees Exceeded ! Please Enter Vaid Amount';
+            }
+            
+            $response = [
+             'feesExeeded' => $exceeded,
+             'msg'=>$msg
+            ];
+        }
+        else if($expense_id==2)
+        {
+            $balanceDonation=$students->donation-$donationPaid;
+            $outstandingDonation=$amount+$balanceDonation;
+            if($balanceDonation==0)
+            {
+                $exceeded=1;  
+                $msg='Full Donation already paid';
+            }
+            else if($amount==$balanceDonation)
+            {
+                $exceeded=0;  
+                $msg='Not Exceeded';
+            }
+            else if($outstandingDonation>$students->donation)
+            {
+                $exceeded=1;  
+                $msg='Donation Exceeded ! Please Enter Vaid Amount';
+            }
+       
+            $response = [
+             'feesExeeded' => $exceeded,
+             'msg'=>$msg
+            ];
+        }
+  
+     // Return JSON response
+        return $response;
+
     }
 }
