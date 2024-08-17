@@ -3,8 +3,8 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{{ url('/') }}" class="brand-link">
-        <img src="{{ asset('dist/img/logo-round-small.png') }}" alt="{{ session('school')->name }}" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">{{ session('school')->name }}</span>
+        <img src="{{ asset('dist/img/logo-round-small.png') }}" alt="{{ session('school')->name??'' }}" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">{{ session('school')->name??'' }}</span>
     </a>
 
     <!-- Sidebar -->
