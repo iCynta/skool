@@ -107,32 +107,52 @@ class StudentsExpenseController extends Controller
         ];
         return response()->json($response);
     }
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        $created_by = (int) Auth::user()->id;
-        
-        // Validate the incoming request data if needed
-        $validatedData = ['student_id'=>$request->admission_no,'expense_id'=>$request->expense_id,'amount'=>$request->amount, 'created_by'=>$created_by];
-        
-        // Create the student and retrieve the instance
-        $student = StudentsExpense::create($validatedData);
+        try {
+            $created_by = (int) Auth::user()->id;
     
-        // Generate the receipt number using the last incremented ID
-        $receipt_no = 'REC-' . str_pad($student->id, 6, '0', STR_PAD_LEFT); // e.g., REC-000001
+            // Update the validation rule if the table name is incorrect
+            $validatedData = $request->validate([
+                'admission_no' => 'required|integer|exists:students,id',
+                'expense_id' => 'required|integer|exists:expenses,id', // Update to match the correct table name
+                'amount' => 'required|numeric|min:0'
+            ]);
     
-        // Update the student with the receipt number
-        $student->update(['reciept_no' => $receipt_no]);
+            $data = [
+                'student_id' => $validatedData['admission_no'],
+                'expense_id' => $validatedData['expense_id'],
+                'amount' => $validatedData['amount'],
+                'created_by' => $created_by
+            ];
+            dd($data);
     
-        $response = [
-            'status' => 200,
-            'msg' => 'Student created successfully.',
-            'receipt_no' => $receipt_no // Optional: return the receipt number
-        ];
+            // Create the expense record
+            $studentExpense = StudentsExpense::create($data);
+            
+            // Generate and update the receipt number
+            $receipt_no = 'REC-' . str_pad($studentExpense->id, 6, '0', STR_PAD_LEFT);
+            $studentExpense->update(['reciept_no' => $receipt_no]);
     
-        // Return JSON response
-      return response()->json($response);
-   
+            // Prepare and return the response
+            $response = [
+                'status' => 200,
+                'msg' => 'Expense recorded successfully.',
+                'receipt_no' => $receipt_no
+            ];
+    
+            return response()->json($response);
+    
+        } catch (\Illuminate\Database\QueryException $e) {
+            \Log::error('Database Query Error: ' . $e->getMessage());
+            return response()->json(['status' => 500, 'msg' => 'Database query error.', 'error' => $e->getMessage()]);
+        } catch (\Exception $e) {
+            \Log::error('General Error: ' . $e->getMessage());
+            return response()->json(['status' => 500, 'msg' => 'Internal server error.', 'error' => $e->getMessage()]);
+        }
     }
+    
+    
     public function update(Request $request, $id=null)
     {
            

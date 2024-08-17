@@ -92,7 +92,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/student/expenses', [StudentsExpenseController::class, 'index'])->name('student.expenses');
         Route::post('/student/expenses/details', [StudentsExpenseController::class, 'searchStudentsDetails'])->name('student.expenses.details');
         Route::post('/student/expenses/reciepts', [StudentsExpenseController::class, 'loadExpenseReciepts'])->name('student.expenses.reciepts');
-        Route::post('/student/expenses/reciepts/save', [StudentsExpenseController::class, 'store'])->name('student.expenses.reciepts.save');
+        Route::post('/student/expenses/reciepts/save', [StudentsExpenseController::class, 'create'])->name('student.expenses.reciepts.save');
         Route::post('/student/expenses/receipts/update/{id}', [StudentsExpenseController::class, 'update'])->name('student.expenses.reciepts.update');
         Route::get('/students/loadTable', [StudentController::class, 'loadTable'])->name('students.loadTable');
         Route::get('/reciepts/{id}', [RecieptController::class, 'view'])->name('reciepts');
