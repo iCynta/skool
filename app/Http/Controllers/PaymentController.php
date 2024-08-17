@@ -47,11 +47,11 @@ class PaymentController extends Controller
             'amount' => 'required|numeric',
             'detail' => 'nullable|string',
             'payment_slip' => 'nullable|file|mimes:pdf,jpeg,jpg,png,gif|max:2048',
-            'selected_payments' => 'required|string',
+            'selected_payments' => 'required',
         ];
 
-        // Convert selected payments string to an array
-        $selectedPaymentsArray = explode(',', $request->selected_payments);
+        // Convert the comma-separated string to an array and cast each element to an integer
+        $selectedPaymentsArray = array_map('intval', explode(',', $request->selected_payments));
 
         // Validate each selected payment ID exist in student expense table
         foreach ($selectedPaymentsArray as $id) {
@@ -60,7 +60,7 @@ class PaymentController extends Controller
             }
         }
         $validator = Validator::make($request->all(), $rules);
-    
+   
         // Check if the validation failed
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -79,7 +79,7 @@ class PaymentController extends Controller
             // Set paid_date to current date and time
             $validatedData['paid_date'] = Carbon::now()->toDateTimeString();
 
-            // Convert the array to JSON
+            // Convert the integer array to JSON for storage
             $validatedData['selected_payments'] = json_encode($selectedPaymentsArray);
 
             // Handle file upload if present
