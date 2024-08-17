@@ -11,12 +11,7 @@
         /* Adjust the value as needed */
     }
 
-
-
-
-</style>
-<style>
-/* Style for the select element */
+    /* Style for the select element */
 #admissionSearch {
   width: 30%; /* Width of the select element */
   padding: 10px; /* Padding inside the select */

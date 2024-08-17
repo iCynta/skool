@@ -45,7 +45,7 @@
         <div class="table-responsive mt-4">
             <table class="table table-sm table-striped">
                 <thead class="bg-dark">
-                    <tr><td colspan="11">Payment History</td></tr>
+                    <tr><td colspan="11">Payments</td></tr>
                     <tr class="bg-info">
                         <td colspan="11">
                             <form action="{{ route('reports.students.index') }}" method="GET">

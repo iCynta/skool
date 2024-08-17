@@ -26,7 +26,7 @@
                      with font-awesome or any other icon font library -->
                 <li class="nav-item">
                     <a href="{{ url('/dashboard') }}" class="nav-link">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <i class="nav-icon fas fa-house-chimney"></i>
                         <p>
                             Dashboard
                         </p>
@@ -38,7 +38,7 @@
                     <a href="#" class="nav-link">
                     <i class="nav-icon fas fa-copy"></i>
                     <p>
-                        ADMIN CORNER
+                        Masters
                         <i class="fas fa-angle-left right"></i>
                         <!-- <span class="badge badge-info right">6</span> -->
                     </p>
@@ -80,9 +80,9 @@
 
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                    <i class="nav-icon fas fa-copy"></i>
+                    <i class="nav-icon fas fa-solid fa-users"></i>
                     <p>
-                        EMPLOYEE MASTER
+                        Employees
                         <i class="fas fa-angle-left right"></i>
                         <!-- <span class="badge badge-info right">6</span> -->
                     </p>
@@ -112,20 +112,13 @@
 
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                    <i class="nav-icon fas fa-copy"></i>
+                    <i class="nav-icon fas fa-solid fa-children"></i>
                     <p>
-                        STUDENT MASTER
+                        Students
                         <i class="fas fa-angle-left right"></i>
-                        <!-- <span class="badge badge-info right">6</span> -->
                     </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <!-- <li class="nav-item">
-                            <a href="{{route('students.create')}}" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>New Student</p>
-                            </a>
-                        </li> -->
                         <li class="nav-item">
                             <a href="{{route('students.index')}}" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
@@ -144,9 +137,9 @@
 
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                    <i class="nav-icon fas fa-copy"></i>
+                    <i class="nav-icon fas fa-solid fa-car"></i>
                     <p>
-                        VEHICLE MASTER
+                        Vehicles
                         <i class="fas fa-angle-left right"></i>
                     </p>
                     </a>
@@ -168,9 +161,9 @@
 
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                    <i class="nav-icon fas fa-copy"></i>
+                    <i class="nav-icon fas fa-solid fa-file-excel"></i>
                     <p>
-                        ACCOUNTS
+                        Accounts
                         <i class="fas fa-angle-left right"></i>
                         <!-- <span class="badge badge-info right">6</span> -->
                     </p>
@@ -194,9 +187,9 @@
 
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                    <i class="nav-icon fas fa-copy"></i>
+                    <i class="nav-icon fas fa-briefcase"></i>
                     <p>
-                        REPORTS
+                        Reports
                         <i class="fas fa-angle-left right"></i>
                         <!-- <span class="badge badge-info right">6</span> -->
                     </p>
@@ -215,9 +208,9 @@
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                    <i class="nav-icon fas fa-copy"></i>
+                    <i class="nav-icon fas fa-cog"></i>
                     <p>
-                        SETTINGS
+                        Settings
                         <i class="fas fa-angle-left right"></i>
                         <!-- <span class="badge badge-info right">6</span> -->
                     </p>
