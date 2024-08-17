@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('expense_id'); // Expense ID
             $table->decimal('amount', 10, 2); // Amount with 2 decimal places
             $table->unsignedBigInteger('created_by');
+            $table->boolean('settled')->default(false);
             $table->timestamps();
         });
     }

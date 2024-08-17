@@ -14,9 +14,8 @@
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item">Dashboard</li>
-                    <li class="breadcrumb-item">Management Corner</li>
-                    <li class="breadcrumb-item">Department</li>
-                    <li class="breadcrumb-item active"><a href="#">New</a></li>
+                    <li class="breadcrumb-item">Employee</li>
+                    <li class="breadcrumb-item active"><a href="#">List</a></li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->

@@ -73,21 +73,6 @@
                                     <input type="date" class="form-control" id="dob" name="dob" required>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label for="referred_by">Referred By</label>
-                                    <select class="form-control" id="referred_by" name="referred_by">
-                                        <option value="">Select User</option>
-                                        @foreach($managementUsers as $managementUser)
-                                        <option value="{{ $managementUser->id }}">{{ $managementUser->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                        </div> <!-- /.row -->
-
-                        <div class="row">
 
                             <div class="col-md-3">
                                 <div class="form-group">
@@ -100,6 +85,22 @@
                                         @endforelse
                                     </select>
 
+                                </div>
+                            </div>
+
+                        </div> <!-- /.row -->
+
+                        <div class="row">
+
+                        <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="referred_by">Referred By</label>
+                                    <select class="form-control" id="referred_by" name="referred_by">
+                                        <option value="">Select User</option>
+                                        @foreach($managementUsers as $managementUser)
+                                        <option value="{{ $managementUser->id }}">{{ $managementUser->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
 

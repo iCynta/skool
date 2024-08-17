@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\CourseController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\StudentsExpenseMaster;
 use App\Http\Controllers\StudentsExpenseController;
 use App\Http\Controllers\StudentReportController;
 use App\Models\School;
+use App\Models\User;
 use App\Exports\StudentsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -123,6 +125,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('expense/voucher/print/{voucher}', [EmployeeExpenseController::class, 'printExpenseVoucher'])->name('print.expense.voucher');
     });
 
+    // Employee Payments
+    Route::middleware(['role:Management|Organizer|Accountant'])->group(function () {
+        Route::get('payment/create/', [PaymentController::class, 'create'])->name('payment.create');
+        Route::get('payment/store/', [PaymentController::class, 'store'])->name('payments.store');
+        
+    });
+
     // Settings
     Route::middleware(['role:Management|Organizer|Accountant'])->group(function () {
         Route::get('/settings/expense/master', function () {
@@ -137,3 +146,17 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 Route::get('/export-students', [StudentReportController::class, 'export'])->name('export.students');
+
+Route::middleware(['role:Management|Organizer|Accountant'])->group(function () {
+    Route::get('/payments/history/', [PaymentController::class, 'index'])->name('payments.history');
+    Route::get('/cashInHand/settle/', [PaymentController::class, 'create'])->name('payments.cashInHand.settle');
+    Route::post('/cashInHand/settle/', [PaymentController::class, 'store'])->name('payments.cashInHand.settle');
+});
+
+// Route to load management users for drop down listing
+// Route::get('/api/management/users', function (Request $request) {
+//     $courseId = $request->query('course_id');
+//     $users = User::where('course_id', $courseId)->get(['id', 'name']);
+//     return response()->json(['users' => $users]);
+// });
+
