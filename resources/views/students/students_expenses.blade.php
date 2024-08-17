@@ -290,6 +290,21 @@
         $('#submitFeeButton').click(function () {
             var feeAmount = $('#feeAmount').val();
             var expenseId = $('#expenseSelect').val();
+         
+            if(expenseId=='')
+            {  
+                $('#experror').show();
+                $('#experror').html('* Please Select Expense !');
+             return false;
+         
+            }
+            if(feeAmount=='')
+            {  
+                $('#experror').show();
+                $('#experror').html('* Fees Amount cannot be empty !');
+             return false;
+         
+            }
             // Perform your AJAX submit here
             $.ajax({
                 url: '{{ route("student.expenses.reciepts.save")}}', // Update this URL to your submit fee route
@@ -318,6 +333,21 @@
             // Get values from the modal inputs
             var feeAmount = $('#feeAmount').val();
             var expenseId = $('#expenseSelect').val();
+
+            if(expenseId=='')
+            {  
+                $('#experror').show();
+                $('#experror').html('* Please Select Expense !');
+             return false;
+         
+            }
+            if(feeAmount=='')
+            {  
+                $('#experror').show();
+                $('#experror').html('* Fees Amount cannot be empty !');
+                 return false;
+         
+            }
             var id = $('#expenseid').val();
             const url = '{{ route('student.expenses.reciepts.update', '') }}' + '/' + id;
 
@@ -389,6 +419,8 @@
            $('#experror').html('');
             var feeAmount = $('#feeAmount').val();
             var expenseId = $('#expenseSelect').val();
+            var expenseeditid =$('#expenseid').val();
+       
             if(expenseId=='')
             {  
                 $('#experror').show();
@@ -419,18 +451,21 @@
                 }
                 else  if(response.feesExeeded==0)
                 {
-                    $('#submitFeeButton').show();
-                    // $('#updateFeeButton').show();
-                    $('#valmsg').hide();
+               if($('#expenseid').val()!='')
+                {
+                $('#submitFeeButton').hide();
+                $('#updateFeeButton').show();
                 }
-                  
-                 // loadExpenses();
-                    // $('#searchButton').click();
-                    // Swal.fire({
-                    //     title: response.msg,
-                    //     icon: "success"
-                    // });
-                    // Reset fields or perform other actions
+                else
+                {
+
+                    $('#submitFeeButton').show();
+                    $('#updateFeeButton').hide();
+                }
+                $('#valmsg').hide();    
+                   
+                }
+       
                 },
                 error: function (xhr) {
                     alert('An error occurred. Please try again.');
