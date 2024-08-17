@@ -42,8 +42,6 @@ class Payment extends Model
         return StudentsExpense::whereIn('id', $selectedPaymentsArray);
     }
     
-    
-    
 
     public function paidTo()
     {

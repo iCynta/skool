@@ -12,6 +12,7 @@ use App\Models\StudentsExpenseMasterModel;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Exports\StudentsExport;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class StudentReportController extends Controller
@@ -21,12 +22,15 @@ class StudentReportController extends Controller
      */
     public function index(Request $request)
     {
+
         // Initialize the query
         $query = Student::query();
-    
+
         // Apply filters if present
-        if ($request->filled('course_id')) {
+        if ( Auth::user()->roles->first()->name === 'Management' && $request->filled('course_id')) {
             $query->where('course_id', $request->course_id);
+        } else {
+            $query->where('course_id', Auth::user()->course_id);
         }
     
         if ($request->filled('batch_id')) {
@@ -55,11 +59,18 @@ class StudentReportController extends Controller
     
         $students = $query->orderBy('id', 'DESC')->paginate(10);
     
-        // Fetch data for filters
-        $courses = Course::all();
-        $batches = Batch::all();
-        $departments = Department::all();
-        $seatTypes = SeatType::all(); // Assuming SeatType model exists
+        // Fetch data for filters by checking the role of the logged-in user
+        if(Auth::user()->roles->first()->name === 'Management'){
+            $courses = Course::all();
+            $batches = Batch::all();
+            $departments = Department::all();
+        } else {
+            $courses = Course::where('id', Auth::user()->course_id)->get();
+            $batches = Batch::where('course_id', Auth::user()->course_id)->get();
+            $departments = Department::where('course_id', Auth::user()->course_id)->get();
+        }     
+    
+        $seatTypes = SeatType::all(); 
         $seatTypesforTable = SeatType::all()->pluck('name', 'id')->toArray();
     
         // Get additional student details

@@ -153,10 +153,5 @@ Route::middleware(['role:Management|Organizer|Accountant'])->group(function () {
     Route::post('/cashInHand/settle/', [PaymentController::class, 'store'])->name('payments.cashInHand.settle');
 });
 
-// Route to load management users for drop down listing
-// Route::get('/api/management/users', function (Request $request) {
-//     $courseId = $request->query('course_id');
-//     $users = User::where('course_id', $courseId)->get(['id', 'name']);
-//     return response()->json(['users' => $users]);
-// });
+
 
