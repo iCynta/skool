@@ -480,7 +480,7 @@
        
                 },
                 error: function (xhr) {
-                    alert('An error occurred. Please try again.');
+                    // alert('An error occurred. Please try again.');
                 }
             });
             }
