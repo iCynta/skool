@@ -109,29 +109,79 @@ class StudentController extends Controller
         $batches = Batch::all();
         $departments = Department::all();
         $seatTypes = SeatType::all();
-        $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(10);
+        $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(1);
 
 
         return view('students.index', compact('students', 'managementUsers', 'courses', 'batches', 'departments', 'seatTypes'));
     }
     public function loadTable(Request $request)
     {
-        // Adjust the pagination size as needed
-        $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(100);
-
-        $disp = ''; // Initialize $disp to avoid undefined variable notice
-
+        $filters = $request->get('filters', []);
+    
+        $query = Student::with(['referredBy', 'course', 'batch', 'department']);
+    
+        if (!empty($filters['id'])) {
+            $query->where('id', $filters['id']);
+        }
+        if (!empty($filters['admission_no'])) {
+            $query->where('admission_no', 'like', '%' . $filters['admission_no'] . '%');
+        }
+        if (!empty($filters['name'])) {
+            $query->where('name', 'like', '%' . $filters['name'] . '%');
+        }
+        if (!empty($filters['course'])) {
+            $query->whereHas('course', function($q) use ($filters) {
+                $q->where('name', 'like', '%' . $filters['course'] . '%');
+            });
+        }
+        if (!empty($filters['batch'])) {
+            $query->whereHas('batch', function($q) use ($filters) {
+                $q->where('name', 'like', '%' . $filters['batch'] . '%');
+            });
+        }
+        if (!empty($filters['department'])) {
+            $query->whereHas('department', function($q) use ($filters) {
+                $q->where('name', 'like', '%' . $filters['department'] . '%');
+            });
+        }
+        if (!empty($filters['seat_type'])) {
+            $query->where('seat_type', $filters['seat_type']);
+        }
+    
+        $students = $query->orderBy('id', 'desc')->paginate(10);
+    
+        $disp = '';
         foreach ($students as $student) {
             $disp .= '<tr>';
-            $disp .= '<td>' . $student->id . '</td>';
+            // $disp .= '<td>' . $student->id . '</td>';
             $disp .= '<td>' . $student->admission_no . '</td>';
             $disp .= '<td>' . $student->name . '</td>';
             $disp .= '<td>' . $student->course->name . '</td>';
             $disp .= '<td>' . $student->batch->name . '</td>';
             $disp .= '<td>' . $student->department->name . '</td>';
-            $disp .= '<td>' . $student->seat_type . '</td>';
+            if($student->seat_type==1) {
+                $seatname="Merit Seat";
+            } else if($student->seat_type==2) {
+                $seatname="Management Seat";
+            }
+            $disp .= '<td>' . $seatname . '</td>';
             $disp .= '<td>';
-            $disp .= '<a href="' . route('students.edit', $student) . '" class="btn btn-warning">Edit</a>';
+            $disp .= '<a class="btn btn-primary" onclick="editModal(this)" 
+                data-id="' . $student->id . '" 
+                data-name="' . $student->name . '" 
+                data-dob="' . $student->dob . '"
+                data-contact_number="' . $student->contact_number . '" 
+                data-contact_person="' . $student->contact_person . '" 
+                data-student_relation="' . $student->student_relation . '" 
+                data-seat_type="' . $student->seat_type . '" 
+                data-donation="' . $student->donation . '" 
+                data-referred_by="' . $student->referred_by . '" 
+                data-address="' . $student->address . '" 
+                data-gender="' . $student->gender . '" 
+                data-admission_no="' . $student->admission_no . '" 
+                data-course="' . $student->course_id . '" 
+                data-batch="' . $student->batch_id . '" 
+                data-department="' . $student->department_id. '">Edit</a>';
             $disp .= '<form action="' . route('students.destroy', $student) . '" method="POST" style="display:inline;">';
             $disp .= csrf_field();
             $disp .= method_field('DELETE');
@@ -140,18 +190,15 @@ class StudentController extends Controller
             $disp .= '</td>';
             $disp .= '</tr>';
         }
-
-        // Generate pagination links using Bootstrap 4 styling
+    
         $paginate = $students->links('vendor.pagination.bootstrap-4')->toHtml();
-
+    
         $response = [
             'status' => 200,
             'data' => $disp,
             'links' => $paginate
         ];
-
-        // Return JSON response
-
+    
         return response()->json($response);
     }
 
@@ -230,8 +277,8 @@ public function searchAdmissions(Request $request)
             'contact_person' => 'nullable|string|max:255',
             'student_relation' => 'nullable|string|max:255',
             'seat_type' => 'required|string|max:255',
-            'donation' => 'nullable|numeric',
-            'referred_by' => 'nullable|exists:users,id',
+            // 'donation' => 'nullable|numeric',
+            // 'referred_by' => 'nullable|exists:users,id',
             'admission_no' => 'required|string|max:255|unique:students,admission_no',
             'course_id' => 'required|exists:courses,id',
             'batch_id' => 'required|exists:batches,id',
@@ -268,8 +315,8 @@ public function searchAdmissions(Request $request)
             'contact_person' => 'nullable|string|max:255',
             'student_relation' => 'nullable|string|max:255',
             'seat_type' => 'required|string|max:255',
-            'donation' => 'nullable|numeric',
-            'referred_by' => 'nullable|exists:users,id',
+            // 'donation' => 'nullable|numeric',
+            // 'referred_by' => 'nullable|exists:users,id',
             'admission_no' => 'required|string|max:255|unique:students,admission_no,' . $student->id,
             'course_id' => 'required|exists:courses,id',
             'batch_id' => 'required|exists:batches,id',

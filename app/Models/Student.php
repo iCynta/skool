@@ -23,7 +23,8 @@ class Student extends Model
         'course_id',
         'batch_id',
         'department_id',
-        'gender'
+        'gender',
+        'address'
     ];
 
     public function referredBy()

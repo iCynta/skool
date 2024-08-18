@@ -54,7 +54,7 @@
                                 <th colspan="8"><a class="btn btn-lg btn-success mr-2 float-right" onclick="openModal(0)">Add</a></th>
                             </tr>
                             <tr>
-                                <th>ID</th>
+                                <!-- <th>ID</th> -->
                                 <th>Admission No</th>
                                 <th>Name</th>
                                 <th>Course</th>
@@ -163,7 +163,7 @@
                                     <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="referred_by">Referred By</label>
-                                                <select class="form-control" id="referred_by" name="referred_by">
+                                                <select class="form-control" id="referred_by" name="referred_by" disabled>
                                                     <option value="">Select User</option>
                                                     @foreach($managementUsers as $managementUser)
                                                     <option value="{{ $managementUser->id }}">{{ $managementUser->name
@@ -176,7 +176,7 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="donation">Donation</label>
-                                                <input type="number" class="form-control" id="donation" name="donation">
+                                                <input type="number" class="form-control" id="donation" name="donation" disabled>
                                             </div>
                                         </div>
 
@@ -504,7 +504,19 @@ $('input[id^="filter-"]').on('keyup', function() {
             var page = url.split('page=')[1];
             loadTable(page);
         });
-
+        document.getElementById('seat_type').addEventListener('change', function() {
+        if (this.value == '1') {
+            const referred_by = document.getElementById('referred_by');
+            const donation = document.getElementById('donation');
+            referred_by.disabled = true;
+            donation.disabled = true;
+        }
+        else
+        {
+            referred_by.disabled = false;
+            donation.disabled = false;  
+        }
+    });
     </script>
     <!-- /.content -->
     @endsection
