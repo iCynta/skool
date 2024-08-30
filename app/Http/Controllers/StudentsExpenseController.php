@@ -219,88 +219,67 @@ class StudentsExpenseController extends Controller
 
     public function checkStudentFeesExceeded(Request $request)
     {
-        $expense_id=$request->expense_id;
-        $amount=$request->amount;
-        $students=Student::where('id',$request->admission_no)->first(); 
-        $batch=Batch::where('id',$students->batch_id)->first();
-        $Course=Course::where('id',$students->course_id)->first();
-        $Department=Department::where('id',$students->department_id)->first();
+        $expense_id = $request->expense_id;
+        $amount = $request->amount;
+        
+        $student = Student::find($request->admission_no);
+        $batch = Batch::find($student->batch_id);
+        $course = Course::find($student->course_id);
+        $department = Department::find($student->department_id);
       
-        $totalInstallments=$batch->course_tenure;
         $totalFees = $batch->tution_fee; // Total fees
-        $amountPaid = StudentsExpense::where('student_id', $request->admission_no)
-        ->where('expense_id', 1)
-        ->sum('amount'); // Amount paid
-        $totalMonths = $batch->course_tenure; // Total months for payment
-        $balance=$totalFees-$amountPaid;
-        $monthsPaid = $this->calculateMonthsPaid($totalFees, $amountPaid, $totalMonths);
-        $donationPaid = StudentsExpense::where('student_id', $request->admission_no)
-        ->where('expense_id', 2)
-        ->sum('amount'); // Amount paid
-      
-        $exceeded=0;
-        $msg='Not Exceeded';
-     
-        if($expense_id==1)
-        {
-            $outstandingAmount=$amount+$balance;
-            if($balance==0)
-            {
-                $exceeded=1;  
-                $msg='Full Fees already paid';
+        $amountPaid = StudentsExpense::where('student_id', $student->id)
+            ->where('expense_id', 1)
+            ->sum('amount'); // Amount paid so far
+        $balance = $totalFees - $amountPaid;
+        
+        $donationPaid = StudentsExpense::where('student_id', $student->id)
+            ->where('expense_id', 2)
+            ->sum('amount'); // Donation paid so far
+        
+        $exceeded = 0;
+        $msg = 'Not Exceeded';
+    
+        if ($expense_id == 1) {
+            $outstandingAmount = $amount + $amountPaid;
+            
+            if ($balance == 0) {
+                $exceeded = 1;  
+                $msg = 'Full Fees already paid';
+            } elseif ($amount == $balance) {
+                $exceeded = 0;  
+                $msg = 'Not Exceeded';
+            } elseif ($outstandingAmount > $totalFees) {
+                $exceeded = 1;  
+                $msg = 'Fees Exceeded! Please Enter a Valid Amount';
+            } else {
+                $exceeded = 0;  
+                $msg = 'Not Exceeded';
             }
-            else if($amount==$balance)
-            {
-                $exceeded=0;  
-                $msg='Not Exceeded';
+        } elseif ($expense_id == 2) {
+            $balanceDonation = $student->donation - $donationPaid;
+            $outstandingDonation = $amount + $donationPaid;
+            
+            if ($balanceDonation == 0) {
+                $exceeded = 1;  
+                $msg = 'Full Donation already paid';
+            } elseif ($amount == $balanceDonation) {
+                $exceeded = 0;  
+                $msg = 'Not Exceeded';
+            } elseif ($outstandingDonation > $student->donation) {
+                $exceeded = 1;  
+                $msg = 'Donation Exceeded! Please Enter a Valid Amount';
+            } else {
+                $exceeded = 0;  
+                $msg = 'Not Exceeded';
             }
-            else if($outstandingAmount>$totalFees)
-            {
-                $exceeded=1;  
-                $msg='Fees Exceeded ! Please Enter Vaid Amount';
-            }
-            else if($outstandingAmount<$totalFees)
-            {
-                $exceeded=0;  
-                $msg='Not Exceeded';
-            }
-            $response = [
-             'feesExeeded' => $exceeded,
-             'msg'=>$msg
-            ];
         }
-        else if($expense_id==2)
-        {
-            $balanceDonation=$students->donation-$donationPaid;
-            $outstandingDonation=$amount+$balanceDonation;
-            if($balanceDonation==0)
-            {
-                $exceeded=1;  
-                $msg='Full Donation already paid';
-            }
-            else if($amount==$balanceDonation)
-            {
-                $exceeded=0;  
-                $msg='Not Exceeded';
-            }
-            else if($outstandingDonation>$students->donation)
-            {
-                $exceeded=1;  
-                $msg='Donation Exceeded ! Please Enter Vaid Amount';
-            }
-            else if($outstandingDonation<$students->donation)
-            {
-                $exceeded=0;  
-                $msg='Not Exceeded';
-            }
-            $response = [
-             'feesExeeded' => $exceeded,
-             'msg'=>$msg
-            ];
-        }
-  
-     // Return JSON response
-        return $response;
-
+    
+        // Returning the result as an array or variables
+        return [
+            'feesExceeded' => $exceeded,
+            'msg' => $msg
+        ];
     }
+    
 }

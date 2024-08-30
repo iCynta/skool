@@ -454,14 +454,14 @@
                     _token: '{{ csrf_token() }}' // Add CSRF token for security
                 },
                 success: function (response) {
-                    if(response.feesExeeded==1)
+                    if(response.feesExceeded==1)
                 {
                     $('#valmsg').show();
                     $('#submitFeeButton').hide();
                     $('#updateFeeButton').hide();
                     $('#valmsg').html(response.msg);
                 }
-                else  if(response.feesExeeded==0)
+                else  if(response.feesExceeded==0)
                 {
                if($('#expenseid').val()!='')
                 {

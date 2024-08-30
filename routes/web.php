@@ -53,7 +53,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/schools', [SchoolController::class, 'index'])->name('schools.index');
         Route::post('/schools', [SchoolController::class, 'store'])->name('schools.add');
         Route::get('/schools/create', function () {
-            return view('settings.students_expenses');
+            return view('schools.create');
         })->name('schools.create');
     });
 
