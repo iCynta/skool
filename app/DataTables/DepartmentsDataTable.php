@@ -17,7 +17,7 @@ class DepartmentsDataTable extends DataTable
     {
         return datatables()
         ->eloquent($query)
-        ->addColumn('action', 'departments.action')
+        //->addColumn('action', 'departments.action')
         ->addColumn('course_name', function ($batch) {
             return $batch->course ? $batch->course->name : '';
         });

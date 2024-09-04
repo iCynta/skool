@@ -18,14 +18,14 @@ class EmployeeExpenseController extends Controller
      */
     public function index(Request $request)
     {
-        $employees = User::all();
+        $employees = User::withSameCourse()->get();
         $query = EmployeeExpense::with('employee', 'expenseMaster');
 
         // Apply filters
         if ($request->filled('employee_id')) {
             $query->where('employee_id', $request->employee_id);
         }
-        
+
         if ($request->filled('settled')) {
             $query->where('settled', $request->settled);
         }
@@ -39,28 +39,24 @@ class EmployeeExpenseController extends Controller
 
     public function create()
     {
-        $employees = User::all();
+        $employees = User::withSameCourse()->get();
         $expenseTypes = EmployeeExpenseMaster::all();
         return view('employee_expenses.create', compact('employees', 'expenseTypes'));
     }
 
     public function store(Request $request)
     {
- 
+
         $validatedData = $request->validate([
             'employee_id' => 'required|exists:users,id',
             'expense_id' => 'required|exists:employee_expense_masters,id',
             'amount' => 'required|numeric|min:0|max:999999.99',
             'description' => 'nullable|string',
-            //'voucher_no' => 'required|string|max:20|unique:employee_expenses,voucher_no',
-            ///'created_by' => 'required|exists:users,id',
-            // 'settled' => 'required|boolean',
         ]);
-        
-     
+
         try {
             $expense = new EmployeeExpense();
-            
+
             $expense->employee_id = $validatedData['employee_id'];
             $expense->expense_id = $validatedData['expense_id'];
             $expense->description = $validatedData['description'];
@@ -77,7 +73,7 @@ class EmployeeExpenseController extends Controller
             return redirect()->back()->withInput()->withErrors(['error' => 'An error occurred while saving the expense. Please try again.']);
         }
     }
-    
+
 
     public function show($id)
     {
@@ -90,12 +86,12 @@ class EmployeeExpenseController extends Controller
         $expense = EmployeeExpense::findOrFail($id);
         $authUser = Auth::user();
 
-        if ($authUser->role->name == 'Management') {
-            // Get all users
+        if ($authUser->role->name === 'Management') {
+            // Get all users of same course
             $users = User::all();
         } else {
             // Get users based on the same course as the authenticated user
-            $users = User::where('course_id', $authUser->course_id)->get();
+            $users = User::withSameCourse()->get();
         }
         $expenseMasters = EmployeeExpenseMaster::all();
         return view('employee_expenses.edit', compact('expense', 'employees', 'expenseMasters'));

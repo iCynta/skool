@@ -7,7 +7,7 @@
 <div class="content-header card">
     <div class="container-fluid">
         <div class="row mb-2">
-            
+
             <div class="col-sm-8">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
@@ -64,7 +64,7 @@
                             </div>
                         </div>
                         @php
-                        $auth_user = Auth::user();      
+                        $auth_user = Auth::user();
                         @endphp
                         @if(Auth::user()->role->name === "Management")
                         <div class="row mb-3">
@@ -90,7 +90,7 @@
                         </div>
                         @else
                             <input type="hidden" name="course_id" value="{{Auth::user()->course_id }}"/>
-                        
+
                         @endif
 
                         <div class="row mb-3">
@@ -120,7 +120,7 @@
                             <div class="col-md-6">
                                 <select id="role" class="form-control @error('role') is-invalid @enderror" name="role" required>
                                 <option value="">Select User Role</option>
-                                    @foreach($roles as $role)                                        
+                                    @foreach($roles as $role)
                                         <option value="{{ $role->id }}" {{ $user->role_id === $role->id ? "selected = true" : '' }}>{{ $role->name }}</option>
                                     @endforeach
                                 </select>
@@ -175,12 +175,14 @@
                             </div>
                         </div>
 
-                        
+
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-secondary float-right">
+                                <button type="submit" class="btn btn-sm btn-success float-right">
                                     {{ __('Update Details') }}
                                 </button>
+
+                                <a href="{{route('user.index')}}" class="btn btn-sm btn-secondary">Back</a>
                             </div>
                         </div>
                 </form>

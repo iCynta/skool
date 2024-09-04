@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,6 +12,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Course;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -62,5 +61,15 @@ class User extends Authenticatable
 
     public function course(){
         return $this->belongsTo(Course::class);
+    }
+
+    public function scopeWithSameCourse($query)
+    {
+        // If the user is having Management role, return all users.
+        if(Auth::user()->role->name === "Management"){
+            return $query;
+        } else {
+            return $query->where('course_id', auth()->user()->course_id);
+        }
     }
 }

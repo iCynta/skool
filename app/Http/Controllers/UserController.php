@@ -13,26 +13,57 @@ use Illuminate\Validation\Rule;
 class UserController extends Controller
 {
     public function index(){
-        if(Auth::user()->role->name ==='Management'){ 
+        if(Auth::user()->role->name ==='Management'){
             $users = User::orderBy('course_id')->get();
         } else {
             $users = User::where('course_id', Auth::user()->course_id)->orderBy('course_id')->get();
         }
-        
+
         return view('users.index', compact('users'));
     }
     public function edit($id){
 
         $user_id = intval($id);
         $user = User::find($user_id);
-        if($user){
+
+        // Checking weather user is accessing own profile.
+        if (($user->id === Auth::user()->id) || (Auth::user()->role->name === "Management"))
+        {
             $roles = Role::all();
             $courses = Course::all();
             return view('users.edit', compact('user', 'roles', 'courses'));
         }
-        return redirect()->back()->withErrors(['error' => 'Failed!! Your details cannot be found.']);
-        
+        return redirect()->back()->withErrors(['error' => 'You are not authorized to access the profile.']);
+
     }
+
+    public function profile($user_id = null)
+    {
+        if($user_id === null){
+            $user_id = Auth::user()->id;
+        }
+        $user = User::with('course', 'role')->findOrFail($user_id);
+        return view('users.view-profile', compact('user'));
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $user = User::find($request->input('user_id'));
+        if ($user) {
+            $user->password = bcrypt($request->input('password'));
+            $user->save();
+
+            return redirect()->back()->with('success', 'Password updated successfully.');
+        }
+
+        return redirect()->back()->with('error', 'User not found.');
+    }
+
+
 
     public function update(Request $request)
     {
@@ -49,7 +80,7 @@ class UserController extends Controller
             'phone' => ['nullable', 'string', 'max:20'],
             'dob' => ['nullable', 'date', 'date_format:Y-m-d'],
         ]);
-        
+
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
@@ -70,7 +101,7 @@ class UserController extends Controller
             // Fetch the role
             $role = Role::findById($request->input('role')); // $data['role'] is the role ID
             // Assign the role to the user
-            $user->assignRole($role);    
+            $user->assignRole($role);
         }
 
         // Save the user

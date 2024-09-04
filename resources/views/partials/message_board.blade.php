@@ -1,4 +1,4 @@
-@if (session('success'))
+{{-- @if (session('success'))
     <div class="alert alert-success">
         {{ session('success') }}
     </div>
@@ -8,9 +8,9 @@
     <div class="alert alert-danger">
         {{ session('error') }}
     </div>
-@endif
+@endif --}}
 
-@if ($errors->any())
+{{-- @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
             @foreach ($errors->all() as $error)
@@ -18,10 +18,24 @@
             @endforeach
         </ul>
     </div>
-@endif
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+@endif --}}
+{{-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> --}}
+@push('scripts')
 <script>
     $(document).ready(function() {
+
+        toastr.options = {
+        "positionClass": "toast-bottom-left", // Set position to lower left corner
+        "closeButton": true,
+        "progressBar": true,
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+
         @if (session('success'))
             toastr.success("{{ session('success') }}");
         @endif
@@ -37,3 +51,4 @@
         @endif
     });
 </script>
+@endpush

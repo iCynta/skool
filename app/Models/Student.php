@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Student extends Model
 {
@@ -45,6 +46,16 @@ class Student extends Model
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function scopeWithSameCourse($query)
+    {
+        // If the logged user is having Management role, return all users.
+        if(Auth::user()->role->name === "Management"){
+            return $query;
+        } else {
+            return $query->where('course_id', auth()->user()->course_id);
+        }
     }
 }
 

@@ -26,7 +26,7 @@
 <!-- Main content -->
 <div class="content card">
     <div class="container-fluid">
-    
+
     <div class="row">
         <div class="container mt-2 pb-2">
             <div class="row justify-content-center">
@@ -41,7 +41,7 @@
                 <div class="col-md-2">
                     <a class="btn btn-lg btn-success mr-2" href="{{ route('register') }}">Add</a>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
     <div class="table-responsive">
@@ -49,7 +49,7 @@
             <thead class="bg-dark">
                 <tr>
                 <th>Si No:</th> <th>Name</th> <th>Designation</th><th>Role</th><th>Course</th><th> Action</th>
-                </tr>                
+                </tr>
             </thead>
             <tbody>
                 @forelse ($users as $user)
@@ -60,9 +60,14 @@
                         <td>{{$user->role->name}}</td>
                         <td>{{$user->course->name}}</td>
                         <td>
-                            <a href="#" class="btn btn-sm btn-primary">View</a>
-                            <a href="{{route('user.edit',['id'=>$user->id])}}" class="btn btn-sm btn-warning">Edit</a>
-                            <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                            <a href="{{route('view-profile',['user_id'=>$user->id])}}" class="btn btn-sm btn-primary">View</a>
+                            @if($user->is(Auth::user()) || Auth::user()->role->name ==="Management")
+                                <a href="{{route('user.edit',['id'=>$user->id])}}" class="btn btn-sm btn-warning">Edit</a>
+                            @endif
+                            @if(Auth::user()->role->name ==="Management")
+                                <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                            @endif
+
                         </td>
                     </tr>
                 @empty
@@ -71,13 +76,13 @@
                             <p class="text-info">No user found at this moment.</p>
                         </td>
                     </tr>
-                @endforelse                
-                
+                @endforelse
+
             </tbody>
             <tfooter></tfooter>
         </table>
     </div>
-    
+
     </div><!-- /.container-fluid -->
 </div>
 <!-- /.content -->

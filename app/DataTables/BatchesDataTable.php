@@ -17,7 +17,7 @@ class BatchesDataTable extends DataTable
     {
         return datatables()
         ->eloquent($query)
-        ->addColumn('action', 'batches.action')
+        //->addColumn('action', 'batches.action')
         ->addColumn('course_name', function ($batch) {
             return $batch->course ? $batch->course->name : '';
         });
@@ -47,7 +47,7 @@ class BatchesDataTable extends DataTable
             ->addAction(['width' => '100px'])
             ->parameters([
                 'dom' => 'Bfrtip',
-                'buttons' => ['export', 'print', 'reset', 'reload'],
+               'buttons' => ['excel', 'pdf', 'print'],
             ]);
     }
 

@@ -14,9 +14,9 @@ class StudentController extends Controller
     public function show(Request $request)
     {
         $filters = $request->get('filters', []);
-    
+
         $query = Student::with(['referredBy', 'course', 'batch', 'department']);
-    
+
         if (!empty($filters['id'])) {
             $query->where('id', $filters['id']);
         }
@@ -44,9 +44,9 @@ class StudentController extends Controller
         if (!empty($filters['seat_type'])) {
             $query->where('seat_type', $filters['seat_type']);
         }
-    
+
         $students = $query->paginate(10);
-    
+
         $disp = '';
         foreach ($students as $student) {
             $disp .= '<tr>';
@@ -63,21 +63,21 @@ class StudentController extends Controller
             }
             $disp .= '<td>' . $seatname . '</td>';
             $disp .= '<td>';
-            $disp .= '<a class="btn btn-primary" onclick="editModal(this)" 
-                data-id="' . $student->id . '" 
-                data-name="' . $student->name . '" 
+            $disp .= '<a class="btn btn-primary" onclick="editModal(this)"
+                data-id="' . $student->id . '"
+                data-name="' . $student->name . '"
                 data-dob="' . $student->dob . '"
-                data-contact_number="' . $student->contact_number . '" 
-                data-contact_person="' . $student->contact_person . '" 
-                data-student_relation="' . $student->student_relation . '" 
-                data-seat_type="' . $student->seat_type . '" 
-                data-donation="' . $student->donation . '" 
-                data-referred_by="' . $student->referred_by . '" 
-                data-address="' . $student->address . '" 
-                data-gender="' . $student->gender . '" 
-                data-admission_no="' . $student->admission_no . '" 
-                data-course="' . $student->course_id . '" 
-                data-batch="' . $student->batch_id . '" 
+                data-contact_number="' . $student->contact_number . '"
+                data-contact_person="' . $student->contact_person . '"
+                data-student_relation="' . $student->student_relation . '"
+                data-seat_type="' . $student->seat_type . '"
+                data-donation="' . $student->donation . '"
+                data-referred_by="' . $student->referred_by . '"
+                data-address="' . $student->address . '"
+                data-gender="' . $student->gender . '"
+                data-admission_no="' . $student->admission_no . '"
+                data-course="' . $student->course_id . '"
+                data-batch="' . $student->batch_id . '"
                 data-department="' . $student->department_id. '">Edit</a>';
             $disp .= '<form action="' . route('students.destroy', $student) . '" method="POST" style="display:inline;">';
             $disp .= csrf_field();
@@ -87,18 +87,18 @@ class StudentController extends Controller
             $disp .= '</td>';
             $disp .= '</tr>';
         }
-    
+
         $paginate = $students->links('vendor.pagination.bootstrap-4')->toHtml();
-    
+
         $response = [
             'status' => 200,
             'data' => $disp,
             'links' => $paginate
         ];
-    
+
         return response()->json($response);
     }
-    
+
     public function index(Request $request)
     {
         $managementUsers = User::whereHas('role', function ($query) {
@@ -109,7 +109,10 @@ class StudentController extends Controller
         $batches = Batch::all();
         $departments = Department::all();
         $seatTypes = SeatType::all();
-        $students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(1);
+        $students = Student::withSameCourse()->with(['referredBy', 'course', 'batch', 'department'])->paginate(10);
+        //$students = Student::with(['referredBy', 'course', 'batch', 'department'])->paginate(10);
+
+        //dd($students);
 
 
         return view('students.index', compact('students', 'managementUsers', 'courses', 'batches', 'departments', 'seatTypes'));
@@ -117,9 +120,8 @@ class StudentController extends Controller
     public function loadTable(Request $request)
     {
         $filters = $request->get('filters', []);
-    
-        $query = Student::with(['referredBy', 'course', 'batch', 'department']);
-    
+        $query = Student::withSameCourse()->with(['referredBy', 'course', 'batch', 'department']);
+
         if (!empty($filters['id'])) {
             $query->where('id', $filters['id']);
         }
@@ -147,9 +149,9 @@ class StudentController extends Controller
         if (!empty($filters['seat_type'])) {
             $query->where('seat_type', $filters['seat_type']);
         }
-    
+
         $students = $query->orderBy('id', 'desc')->paginate(10);
-    
+
         $disp = '';
         foreach ($students as $student) {
             $disp .= '<tr>';
@@ -166,42 +168,41 @@ class StudentController extends Controller
             }
             $disp .= '<td>' . $seatname . '</td>';
             $disp .= '<td>';
-            $disp .= '<a class="btn btn-primary" onclick="editModal(this)" 
-                data-id="' . $student->id . '" 
-                data-name="' . $student->name . '" 
+            $disp .= '<a class="btn btn-sm btn-primary mr-1" onclick="editModal(this)"
+                data-id="' . $student->id . '"
+                data-name="' . $student->name . '"
                 data-dob="' . $student->dob . '"
-                data-contact_number="' . $student->contact_number . '" 
-                data-contact_person="' . $student->contact_person . '" 
-                data-student_relation="' . $student->student_relation . '" 
-                data-seat_type="' . $student->seat_type . '" 
-                data-donation="' . $student->donation . '" 
-                data-referred_by="' . $student->referred_by . '" 
-                data-address="' . $student->address . '" 
-                data-gender="' . $student->gender . '" 
-                data-admission_no="' . $student->admission_no . '" 
-                data-course="' . $student->course_id . '" 
-                data-batch="' . $student->batch_id . '" 
+                data-contact_number="' . $student->contact_number . '"
+                data-contact_person="' . $student->contact_person . '"
+                data-student_relation="' . $student->student_relation . '"
+                data-seat_type="' . $student->seat_type . '"
+                data-donation="' . $student->donation . '"
+                data-referred_by="' . $student->referred_by . '"
+                data-address="' . $student->address . '"
+                data-gender="' . $student->gender . '"
+                data-admission_no="' . $student->admission_no . '"
+                data-course="' . $student->course_id . '"
+                data-batch="' . $student->batch_id . '"
                 data-department="' . $student->department_id. '">Edit</a>';
             $disp .= '<form action="' . route('students.destroy', $student) . '" method="POST" style="display:inline;">';
             $disp .= csrf_field();
             $disp .= method_field('DELETE');
-            $disp .= '<button type="submit" class="btn btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</button>';
+            $disp .= '<button type="submit" class="btn btn-sm btn-danger mr-1" onclick="return confirm(\'Are you sure?\')">Delete</button>';
             $disp .= '</form>';
             $disp .= '</td>';
             $disp .= '</tr>';
         }
-    
+
         $paginate = $students->links('vendor.pagination.bootstrap-4')->toHtml();
-    
+
         $response = [
             'status' => 200,
             'data' => $disp,
             'links' => $paginate
         ];
-    
+
         return response()->json($response);
     }
-
 
     public function create()
     {
@@ -258,16 +259,18 @@ class StudentController extends Controller
         return response()->json($response);
 
 
-}
-public function searchAdmissions(Request $request)
-{
-    $query = $request->input('query');
-    $admissions = Student::where('admission_no', 'LIKE', "%{$query}%")->get();
+    }
 
-    return response()->json($admissions->map(function ($student) {
-        return ['id' => $student->id, 'text' => $student->admission_no.' ('.$student->name.')'];
-    }));
-}
+    public function searchAdmissions(Request $request)
+    {
+        $query = $request->input('query');
+        $admissions = Student::where('admission_no', 'LIKE', "%{$query}%")->get();
+
+        return response()->json($admissions->map(function ($student) {
+            return ['id' => $student->id, 'text' => $student->admission_no.' ('.$student->name.')'];
+        }));
+    }
+
     public function store(Request $request)
     {
         $request->validate([

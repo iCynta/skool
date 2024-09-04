@@ -12,8 +12,9 @@
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item">Dashboard</li>
-                    <li class="breadcrumb-item">Management Corner</li>
-                    <li class="breadcrumb-item">School</li>
+                    <li class="breadcrumb-item">Role and Permissions
+
+                    </li>
                     <li class="breadcrumb-item active"><a href="#">New</a></li>
                 </ol>
             </div><!-- /.col -->
@@ -39,12 +40,12 @@
                     <div class="col-md-2">
                         <a class="btn btn-lg btn-success mr-2" href="{{ route('schools.create') }}">Add</a>
                     </div>
-                </div>            
+                </div>
             </div>
         </div>
 
         <div class="container">
-            
+
             @foreach($roles as $role)
                 <form action="{{ route('roles-permissions.update') }}" method="POST">
                     @csrf
@@ -63,14 +64,14 @@
                             @foreach($permissions as $module => $modulePermissions)
                                 <div class="card card-default mb-3">
                                     <div class="card-header bg-light">
-                                        <h4 class="card-title">{{ ucfirst($module) }}</h4>
+                                        <h4 class="card-title text-info">{{ ucfirst($module) }} Module</h4>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
                                         @foreach($modulePermissions as $permission)
                                             <div class="col-md-3">
                                                 <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input role-permission-{{ $role->id }}" id="{{ $permission->name }}_{{ $role->id }}" 
+                                                    <input type="checkbox" class="form-check-input role-permission-{{ $role->id }}" id="{{ $permission->name }}_{{ $role->id }}"
                                                         name="permissions[]" value="{{ $permission->id }}"
                                                         {{ $role->hasPermissionTo($permission->name) ? 'checked' : '' }}>
                                                     <label class="form-check-label" for="{{ $permission->name }}_{{ $role->id }}">

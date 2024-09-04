@@ -14,7 +14,6 @@
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item">Dashboard</li>
-                    <li class="breadcrumb-item">Management Corner</li>
                     <li class="breadcrumb-item">Department</li>
                     <li class="breadcrumb-item active"><a href="#">New</a></li>
                 </ol>
@@ -27,7 +26,7 @@
 <!-- Main content -->
 <div class="content card">
     <div class="container-fluid">
-    
+
     <div class="row">
         <div class="container mt-2 pb-2">
             <div class="row justify-content-center">
@@ -42,13 +41,13 @@
                 <div class="col-md-2">
                     <a class="btn btn-lg btn-success mr-2" href="{{ route('department.create') }}">Add</a>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
     <div class="table-responsive">
         {!! $dataTable->table(['class' => 'table table-bordered']) !!}
     </div>
-    
+
     </div><!-- /.container-fluid -->
 </div>
 <!-- /.content -->

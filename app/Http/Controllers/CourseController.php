@@ -34,7 +34,7 @@ class CourseController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'code' => 'required|string|unique:courses,code|max:10',
-            'school_id' => 'required|integer|unique:schools,code',                       
+            'school_id' => 'required|integer|unique:schools,code',
         ]);
 
         $school = Course::create($request->all());
@@ -55,7 +55,7 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
-        //
+        return response()->json($course);
     }
 
     /**
@@ -69,8 +69,7 @@ class CourseController extends Controller
         ]);
 
         $course->update($request->all()); // Update the school model with new data
-
-        return redirect()->route('courses')->with('success', 'Course updated successfully!');
+        return response()->json(['success' => 'Course updated successfully!']);
     }
 
     /**
@@ -79,5 +78,17 @@ class CourseController extends Controller
     public function destroy(Course $course)
     {
         //
+    }
+
+    /**
+     * Soft delete the specified resource from storage.
+     */
+    public function softDelete($id)
+    {
+        $course = Course::findOrFail($id);
+        $course->delete();
+        return response()->json([
+            'success' => 'Course deleted successfully!',
+        ]);
     }
 }

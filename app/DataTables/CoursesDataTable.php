@@ -17,8 +17,11 @@ class CoursesDataTable extends DataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', 'courses.action');
+            ->addColumn('action', function($row){
+                return view('course.action', compact('row'));
+            });
     }
+
 
     /**
      * Get query source of dataTable.
@@ -41,12 +44,14 @@ class CoursesDataTable extends DataTable
         return $this->builder()
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->addAction(['width' => '100px'])
+            ->addAction(['width' => '120px']) // Adjust width as needed
             ->parameters([
                 'dom' => 'Bfrtip',
-                'buttons' => ['export', 'print', 'reset', 'reload'],
+                //'buttons' => ['export', 'print', 'reset', 'reload'],
+                'buttons' => ['excel', 'pdf', 'print'],
             ]);
     }
+
 
     /**
      * Get columns.

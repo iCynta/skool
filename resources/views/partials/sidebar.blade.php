@@ -181,7 +181,7 @@
                         <p>Settings<i class="fas fa-angle-left right"></i></p>
                     </a>
                     <ul class="nav nav-treeview" style="{{ request()->is('settings*') ? 'display: block;' : 'display: none;' }}">
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a href="#" class="nav-link {{ request()->is('settings/roles*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Manage Roles</p>
@@ -192,7 +192,7 @@
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Manage Permissions</p>
                             </a>
-                        </li>
+                        </li> --}}
                         <li class="nav-item">
                             <a href="{{ route('settings.expense.master') }}" class="nav-link {{ request()->is('settings/expense/master') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (submenu) {
                 e.preventDefault(); // Prevent default link action
-                
+
                 if (submenu.style.display === 'block') {
                     submenu.style.display = 'none';
                     this.classList.remove('active');
@@ -230,12 +230,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.querySelectorAll('.nav-treeview').forEach(el => {
                         el.style.display = 'none';
                     });
-                    
+
                     // Remove active class from all links
                     document.querySelectorAll('.nav-link').forEach(el => {
                         el.classList.remove('active');
                     });
-                    
+
                     submenu.style.display = 'block';
                     this.classList.add('active');
                 }
