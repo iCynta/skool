@@ -22,7 +22,7 @@
 <div class="content">
     <div class="container-fluid">
         <div class="container">
-            <div class="card card-dark">
+            <div class="card card-info">
                 <div class="card-header">
                     <h3 class="card-title">Payments to Settle</h3>
                     <a href="{{route('payments.history')}}" class="btn btn-sm btn-info float-right">View History</a>

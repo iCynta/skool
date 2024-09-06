@@ -23,25 +23,26 @@ class Payment extends Model
 
     protected $casts = [
         'selected_payments' => 'array', // Cast selected_payments as an array
+        'paid_date' => 'datetime',
     ];
 
     // public function relatedExpenses()
     // {
     //     return StudentsExpense::whereIn('id', $this->selected_payments ?? [])->get();
-    // }    
+    // }
 
     public function relatedStudentExpense()
     {
         // Ensure that selected_payments is properly cast to an array
         $selectedPaymentsArray = $this->selected_payments;
-    
+
         if (!is_array($selectedPaymentsArray)) {
             $selectedPaymentsArray = json_decode($selectedPaymentsArray, true) ?? [];
         }
-    
+
         return StudentsExpense::whereIn('id', $selectedPaymentsArray);
     }
-    
+
 
     public function paidTo()
     {

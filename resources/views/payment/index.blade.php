@@ -24,7 +24,7 @@
 <!-- Main content -->
 <div class="content card">
     <div class="container-fluid">
-    
+
         <div class="row">
             <div class="container mt-2 pb-2">
                 <div class="row justify-content-center">
@@ -63,8 +63,8 @@
                                                 @if($type->payment_type === "management")
                                                     <tr>
                                                         <td colspan="2">
-                                                           
-                                                            
+
+
                                                                 <ul class="list-group">
                                                                     @foreach ($totalsByUserForManagement as $userTotal)
                                                                         <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -73,7 +73,7 @@
                                                                         </li>
                                                                     @endforeach
                                                                 </ul>
-                                                            
+
                                                         </td>
                                                     </tr>
                                                 @endif
@@ -108,7 +108,7 @@
                                                 @forelse ($payments as $payment)
                                                     <tr class="bg-light">
                                                         <td>{{$loop->index + 1}}</td>
-                                                        <td>{{$payment->paid_date}}</td>
+                                                        <td>{{$payment->paid_date->timezone('Asia/Kolkata')->format('d-M-Y h:i:s:a')}}</td>
                                                         <td>{{ucfirst($payment->payment_type)}}</td>
                                                         <td>{{ $payment->paidTo->name ?? "-" }}</td>
                                                         <td>{{$payment->amount}}</td>
@@ -125,11 +125,11 @@
                                                                     <div class="container-fluid">
                                                                         <div class="table-responsive">
                                                                             <table class="table table-sm table-bordered table-condensed">
-                                                                                <thead class="bg-dark text-white">
+                                                                                <thead class="bg-dark text-white text-center">
                                                                                     <tr>
-                                                                                        <th>Receipt No:</th>
+                                                                                        <th>Receipt:</th>
                                                                                         <th>Student</th>
-                                                                                        <th>Payment Type</th>
+                                                                                        <th>Type</th>
                                                                                         <th>Amount</th>
                                                                                         <th>Received On</th>
                                                                                     </tr>
@@ -137,18 +137,19 @@
                                                                                 <tbody>
                                                                                     @forelse ($payment->relatedExpenses as $relatedExpense)
                                                                                         <tr>
+                                                                                            @php //dd($relatedExpense); @endphp
                                                                                             <td>{{$relatedExpense->reciept_no}}</td>
                                                                                             <td>{{$relatedExpense->student->name ?? '-'}}</td>
                                                                                             <td>{{$relatedExpense->expense->expense_name ?? '-'}}</td>
                                                                                             <td>{{$relatedExpense->amount}}</td>
-                                                                                            <td>{{$relatedExpense->expense->created_at ?? '-'}}</td>
+                                                                                            <td>{{$relatedExpense->created_at->timezone('Asia/Kolkata')->format('d-M-Y H:i:s:a') ?? '-'}}</td>
                                                                                         </tr>
                                                                                     @empty
                                                                                         <tr>
                                                                                             <td colspan="5"> No related details found.</td>
                                                                                         </tr>
-                                                                                    @endforelse                         
-                                                                                        
+                                                                                    @endforelse
+
                                                                                 </tbody>
                                                                             </table>
                                                                         </div>

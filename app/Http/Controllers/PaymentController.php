@@ -25,7 +25,9 @@ class PaymentController extends Controller
         $totalsByUserForManagement = $this->getTotalPaidByUserForManagement();
 
         $payments = Payment::where('paid_by',Auth::User()->id)->with('paidTo', 'paidBy')->get();
+
         foreach ($payments as $payment) {
+            //dd($payments);
             $payment->relatedExpenses = $payment->relatedStudentExpense()->with('expense', 'student')->get();
         }
         return view('payment.index', compact('payments','totalsByType', 'totalsByUserForManagement' ));
@@ -41,7 +43,6 @@ class PaymentController extends Controller
         return view('payment.create', compact('payments_to_settle','recipients' ));
     }
 
-    
     // Store a new payment
     public function store(Request $request)
     {
@@ -66,12 +67,11 @@ class PaymentController extends Controller
             }
         }
         $validator = Validator::make($request->all(), $rules);
-   
-        // Check if the validation failed
+
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-    
+
         // Begin the transaction
         DB::beginTransaction();
 
@@ -92,20 +92,16 @@ class PaymentController extends Controller
             if ($request->hasFile('payment_slip')) {
                 $validatedData['payment_slip'] = $this->handleFileUpload($request->file('payment_slip'));
             }
-
             // Update StudentsExpense records
             StudentsExpense::whereIn('id', $selectedPaymentsArray)->update(['settled' => 1]);
-
             // Create new Payment record
             Payment::create($validatedData);
-
             // Commit the transaction
             DB::commit();
 
             // Redirect with success message
             return redirect()->route('payments.cashInHand.settle')->with('success', 'Payment created successfully.');
             } catch (\Exception $e) {
-
                 DB::rollBack();
                 // Optionally, you can log the error or handle it accordingly
                 Log::error($e->getMessage());
@@ -114,8 +110,6 @@ class PaymentController extends Controller
                 return redirect()->back()->withErrors(['error' => 'Failed to create payment. Please try again.']);
             }
     }
-    
-    
 
     // Update an existing payment
     public function update(Request $request, Payment $payment)
@@ -168,7 +162,6 @@ class PaymentController extends Controller
         return $filename;
     }
 
-
     // Total paid to each payment type
     public function getTotalByPaymentType()
     {
@@ -189,8 +182,8 @@ class PaymentController extends Controller
                                 ->groupBy('paid_to')
                                 ->with('paidTo') // Assuming 'paidTo' is a relationship to get user details
                                 ->get();
-    
+
         return $totalsByUser;
     }
-    
+
 }

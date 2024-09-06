@@ -101,7 +101,7 @@
             </div>
             <div id="voucher_detail">
                 <p class="text-sm text-muted">Receipt #:{{ $expense->reciept_no }}</p>
-                <p class="text-sm text-muted">Date: {{ $expense->created_at->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}
+                <p class="text-sm text-muted">Date: {{ $expense->created_at->timezone('Asia/Kolkata')->format('Y-m-d h:i:s:a') }}
                 </p>
             </div>
             <div style="width:100%; height:1px;">.</div>
