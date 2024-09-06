@@ -14,30 +14,24 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('paid_by')->constrained('users')->onDelete('cascade');
-        
+
             // Payment type (e.g., User, Bank, etc.)
             $table->string('payment_type', 100);
+            $table->decimal('amount', 20, 2)->default(0.00)->nullable(false);
             $table->foreignId('paid_to')->nullable()->constrained('users')->onDelete('set null');
-        
-            // Payment detail
             $table->string('detail')->nullable();
-            
-            // Payment slip (assumed to be a string, possibly a file path)
+            // Payment slip a file path)
             $table->string('payment_slip')->nullable();
-            
             // JSON field to store selected payments
             $table->json('selected_payments')->nullable();
-
             $table->dateTime('paid_date');
-            
             // Soft deletes
             $table->softDeletes();
-            
             // Timestamps
             $table->timestamps();
         });
-        
-        
+
+
     }
 
     /**

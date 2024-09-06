@@ -54,13 +54,13 @@
             /* clear:both; */
         }
         .voucher_footer{
-            padding-top:20px;            
+            padding-top:20px;
             margin:10px;
             border-top:1px dotted #333333;
             width:100%;
             height:50px;
         }
-        
+
         .text-right {
             text-align: right !important;
         }
@@ -90,18 +90,19 @@
             <div class="voucher_head">
                 <div class="row">
                     <div class="col-md-3" style=" width:25%; height:100%; v-align:middle; text-align:center; float:left;">
-                        <img src="{{ asset('dist/img/logo-square-big.jpeg') }}" alt="logo" style="width: 90px; margin-top:5px;" class="img-circle elevation-3">
+                        <img src="{{ asset('dist/img/logo-round-small.png') }}" alt="logo" style="width: 90px; margin-top:5px;" class="img-circle elevation-3">
                     </div>
                     <div class="col-md-8" style=" width:74%; height:100%; text-align:center; float:left;">
                         <p class="voucher_title">{{$school->name}} </p>
-                        <address class="text-muted text-sm">{{$school->address}}</address>
+                        <p class="text-muted text-sm">{{$school->address}}</p>
                         <p class="text-muted text-sm"><abbr title="Phone">Phone:</abbr> {{$school->phone}}</p>
-                    </div>   
+                    </div>
                 </div>
             </div>
-            <div id="voucher_detail">                
+            <div id="voucher_detail">
                 <p class="text-sm text-muted">Receipt #:{{ $expense->reciept_no }}</p>
-                <p class="text-sm text-muted">Date: {{ $expense->created_at }}</p>
+                <p class="text-sm text-muted">Date: {{ $expense->created_at->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}
+                </p>
             </div>
             <div style="width:100%; height:1px;">.</div>
             <div id="voucher_body">
@@ -113,7 +114,7 @@
                 <p class="text-left text-sm text-muted" style="width:49%;">Authorized By : ..........................................</p>
 <br/>
                 <p  class="text-left text-sm text-muted" style="width:49%;">Received By : .............................................</p>
-            </div>            
+            </div>
         </div>
     </div>
 </body>

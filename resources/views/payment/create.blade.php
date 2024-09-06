@@ -48,7 +48,7 @@
                                     <td>{{ $payment_to_settle->reciept_no }}</td>
                                     <td>{{ $payment_to_settle->expense->expense_name }}</td>
                                     <td>{{ $payment_to_settle->student->name }}</td>
-                                    <td>{{ $payment_to_settle->created_at }}</td>
+                                    <td>{{ $payment_to_settle->created_at->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}                                    </td>
                                     <td class="amount">{{ $payment_to_settle->amount }}</td>
                                     <td>
                                         <input type="checkbox" value="{{ $payment_to_settle->id }}" name="payments[]"
@@ -72,15 +72,15 @@
                         <!-- Inline Form -->
                         <form action="{{ route('payments.cashInHand.settle') }}" method="POST" class="form-horizontal">
                             @csrf
-                        
+
                             <div class="form-row">
                                 <div class="form-group col-md-2">
                                     <label for="totalAmount">Total Amount:</label>
                                     <input type="text" class="form-control" id="totalAmount" name="amount" readonly>
                                 </div>
-                        
+
                                 <input type="hidden" id="selectedPayments" name="selected_payments">
-                        
+
                                 <div class="form-group col-md-2">
                                     <label for="paymentType">Settle As:</label>
                                     <select class="form-control" id="paymentType" name="payment_type">
@@ -89,7 +89,7 @@
                                         <option value="treasury">Treasury</option>
                                     </select>
                                 </div>
-                        
+
                                 <div class="form-group col-md-2">
                                     <label for="paid_to">Paid to:</label>
                                     <select class="form-control" id="paid_to" name="paid_to">
@@ -101,18 +101,18 @@
                                         @endforelse
                                     </select>
                                 </div>
-                        
+
                                 <div class="form-group col-md-4">
                                     <label for="detail">Description:</label>
                                     <textarea class="form-control" id="detail" name="detail" rows="1" placeholder="Enter description here"></textarea>
                                 </div>
-                        
+
                                 <div class="form-group col-md-2 align-self-end">
                                     <button type="submit" class="btn btn-primary">Settle Payments</button>
                                 </div>
                             </div>
                         </form>
-                                        
+
 
 
 

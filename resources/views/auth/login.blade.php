@@ -4,7 +4,7 @@
 <div class="container h-100 d-flex justify-content-center align-items-center">
     <div class="col-md-5">
         <div class="text-center mb-4">
-            <img src="{{ asset('dist/img/logo-square-big.jpeg') }}" alt="logo" style="width: 128px; height: 128px;" class="img-circle elevation-3">
+            <img src="{{ asset('dist/img/logo-big-without-bg.png') }}" alt="logo" style="width: 128px; height: 128px;" class="img-circle elevation-3">
         </div>
         <div class="card bg-warning">
             <div class="card-header text-center">{{ __('Login') }}</div>
@@ -56,7 +56,7 @@
                                 <!-- <a class="text-weight" href="{{ route('password.request') }}">
                                     {{-- __('Forgot Your Password?') --}}
                                 </a> -->
-                            @endif 
+                            @endif
                         </div>
                     </div>
                 </form>

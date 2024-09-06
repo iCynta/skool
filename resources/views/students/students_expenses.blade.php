@@ -156,7 +156,7 @@
                             <label for="feeAmount">Amount:</label>
                             <input type="number" class="form-control" id="feeAmount" placeholder="Enter Fee Amount"
                             oninput="calculateFee()" style="display: none;"><span id="valmsg"style="color:red;"></span>
-                                
+
                         </div>
                         <div class="form-group mt-3 text-right">
                             <button class="btn btn-success" id="submitFeeButton" style="display: none;">Make
@@ -173,7 +173,7 @@
 
                 </div>
             </div>
-         
+
 
         </div>
 
@@ -256,7 +256,7 @@
                 method: 'POST',
                 data: { admission_no: admissionNo, _token: '{{ csrf_token() }}' },
                 success: function (response) {
-                    console.log(response);
+                    //console.log(response);
                     loadExpenses();
                     $('#batchInfo').text(response.batch);
                     $('#name').text(response.name);
@@ -290,20 +290,20 @@
         $('#submitFeeButton').click(function () {
             var feeAmount = $('#feeAmount').val();
             var expenseId = $('#expenseSelect').val();
-         
+
             if(expenseId=='')
-            {  
+            {
                 $('#experror').show();
                 $('#experror').html('* Please Select Expense !');
              return false;
-         
+
             }
             if(feeAmount=='')
-            {  
+            {
                 $('#experror').show();
                 $('#experror').html('* Fees Amount cannot be empty !');
              return false;
-         
+
             }
             // Perform your AJAX submit here
             $.ajax({
@@ -335,18 +335,18 @@
             var expenseId = $('#expenseSelect').val();
 
             if(expenseId=='')
-            {  
+            {
                 $('#experror').show();
                 $('#experror').html('* Please Select Expense !');
              return false;
-         
+
             }
             if(feeAmount=='')
-            {  
+            {
                 $('#experror').show();
                 $('#experror').html('* Fees Amount cannot be empty !');
                  return false;
-         
+
             }
             var id = $('#expenseid').val();
             const url = '{{ route('student.expenses.reciepts.update', '') }}' + '/' + id;
@@ -406,10 +406,10 @@
         $.ajax({
             url: '{{ route("student.expenses.reciepts") }}', // Update this URL to your search route
             method: 'POST',
-            data: { 
-                admission_no: $('#admissionSearch').val(), 
+            data: {
+                admission_no: $('#admissionSearch').val(),
                 page: page,
-                _token: '{{ csrf_token() }}' 
+                _token: '{{ csrf_token() }}'
             },
             success: function (response) {
                 $('#student-table tbody').html(response.data);
@@ -426,20 +426,20 @@
         });
     }
     function calculateFee()
-    {     
-        
+    {
+
            $('#experror').html('');
             var feeAmount = $('#feeAmount').val();
             var expenseId = $('#expenseSelect').val();
             var expenseeditid =$('#expenseid').val();
-       
+
             if(expenseId=='')
-            {  
+            {
                 $('#experror').show();
                 $('#experror').html('* Please Select Expense !');
                 $('#submitFeeButton').hide();
                 // $('#updateFeeButton').hide();
-            
+
             }
             else
             {
@@ -474,19 +474,19 @@
                     $('#submitFeeButton').show();
                     $('#updateFeeButton').hide();
                 }
-                $('#valmsg').hide();    
-                   
+                $('#valmsg').hide();
+
                 }
-       
+
                 },
                 error: function (xhr) {
                     // alert('An error occurred. Please try again.');
                 }
             });
             }
-            
+
             // Perform your AJAX submit here
-          
+
     }
 </script>
 
