@@ -26,15 +26,26 @@
 <div class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-4">
+            {{-- <div class="col-md-4">
                 <div class="card card-success">
                     <div class="card-header">
                         <div class="card-title text-center">Total Students</div>
                     </div>
                     <div class="card-body text-center"><h4>10</h4></div>
                 </div>
+            </div> --}}
+            <div class="col-md-6">
+                <div class="card card-info text-center">
+                    <div class="card-header">
+                        <div class="card-title">  Expense </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="expenseChart" width="400" height="200"></canvas>
+                    </div>
+
+                </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-6">
                 <div class="card card-info">
                     <div class="card-header">
                         <div class="card-title text-center">Vehicle Expenses</div>
@@ -47,18 +58,8 @@
 
         </div>
         <div class="row">
-            <div class="col-md-8">
-                <div class="card card-info text-center">
-                    <div class="card-header">
-                        <div class="card-title">  Expense </div>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="expenseChart" width="400" height="200"></canvas>
-                    </div>
-                    <div class="card-footer">Footer</div>
-                </div>
-            </div>
-            <div class="col-md-4">
+
+            {{-- <div class="col-md-4">
                 <div class="card card-success text-center">
                     <div class="card-header">
                         <div class="card-title">
@@ -70,7 +71,7 @@
                     </div>
                     <div class="card-footer">Footer</div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div><!-- /.container-fluid -->
 </div>
