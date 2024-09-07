@@ -20,11 +20,15 @@ use App\Http\Controllers\StudentReportController;
 use App\Models\School;
 use App\Models\User;
 use App\Exports\StudentsExport;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 // Public Routes
 Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
     return view('auth/login');
 });
 
@@ -38,9 +42,7 @@ Route::middleware(['auth'])->group(function () {
     $school = School::first();
     session(['school' => $school]); // Store school detail in session
 
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
 // User Management
     Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
